@@ -9,7 +9,6 @@
     "start": "next start",
     "lint": "next lint",
     "build_static": "next build && next export",
-    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "framer-motion": "^8.4.2",
