@@ -1,13 +1,15 @@
 {
-  "name": "y",
+  "name": "medhatjachour portfolio",
   "version": "0.1.0",
   "private": true,
+  "homepage":"https://medhatjachour.github.io/medhatjachour",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build_static": "next build && next export"
+    "build_static": "next build && next export",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "framer-motion": "^8.4.2",
