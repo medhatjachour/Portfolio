@@ -158,6 +158,120 @@ const JourneyPath = () => {
 };
 
 /**
+ * Interactive Sphere with Mouse Follow - creates engaging user interaction
+ */
+const InteractiveSphere = () => {
+  const meshRef = useRef();
+  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: -(e.clientY / window.innerHeight) * 2 + 1
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.01;
+      meshRef.current.rotation.y += 0.01;
+      // Follow mouse smoothly
+      meshRef.current.position.x += (mousePos.x * 2 - meshRef.current.position.x) * 0.05;
+      meshRef.current.position.y += (mousePos.y * 2 - meshRef.current.position.y) * 0.05;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} position={[0, 0, 0]}>
+      <sphereGeometry args={[1.5, 64, 64]} />
+      <MeshDistortMaterial
+        color="#10B981"
+        attach="material"
+        distort={0.6}
+        speed={3}
+        roughness={0}
+        metalness={0.8}
+        emissive="#10B981"
+        emissiveIntensity={0.3}
+        transparent
+        opacity={0.5}
+      />
+    </mesh>
+  );
+};
+
+/**
+ * Rotating Rings - adds depth and motion
+ */
+const RotatingRings = () => {
+  const ring1Ref = useRef();
+  const ring2Ref = useRef();
+  const ring3Ref = useRef();
+
+  useFrame((state) => {
+    if (ring1Ref.current) ring1Ref.current.rotation.x = state.clock.elapsedTime * 0.5;
+    if (ring2Ref.current) ring2Ref.current.rotation.y = state.clock.elapsedTime * 0.7;
+    if (ring3Ref.current) ring3Ref.current.rotation.z = state.clock.elapsedTime * 0.3;
+  });
+
+  return (
+    <group position={[5, 0, -2]}>
+      <mesh ref={ring1Ref}>
+        <torusGeometry args={[2, 0.05, 16, 100]} />
+        <meshBasicMaterial color="#3B82F6" transparent opacity={0.4} />
+      </mesh>
+      <mesh ref={ring2Ref}>
+        <torusGeometry args={[2.3, 0.05, 16, 100]} />
+        <meshBasicMaterial color="#06B6D4" transparent opacity={0.4} />
+      </mesh>
+      <mesh ref={ring3Ref}>
+        <torusGeometry args={[2.6, 0.05, 16, 100]} />
+        <meshBasicMaterial color="#10B981" transparent opacity={0.4} />
+      </mesh>
+    </group>
+  );
+};
+
+/**
+ * Floating Code Cubes - interactive elements that respond to scroll
+ */
+const FloatingCodeCubes = () => {
+  const groupRef = useRef();
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.5;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[-5, 0, -1]}>
+      {[...Array(5)].map((_, i) => (
+        <Float key={i} speed={2 + i * 0.5} rotationIntensity={1} floatIntensity={2}>
+          <mesh position={[i * 0.8 - 2, i * 0.5 - 1, i * 0.3]}>
+            <boxGeometry args={[0.4, 0.4, 0.4]} />
+            <MeshDistortMaterial
+              color={['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899'][i]}
+              distort={0.3}
+              speed={2}
+              transparent
+              opacity={0.7}
+              emissive={['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899'][i]}
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+        </Float>
+      ))}
+    </group>
+  );
+};
+
+/**
  * Hero Organism - Telling Medhat's Story
  * "A passionate software engineer who turned imagination into reality"
  */
@@ -188,8 +302,12 @@ const HeroNew = () => {
         >
           <ambientLight intensity={0.3} />
           <pointLight position={[10, 10, 10]} intensity={0.8} />
+          <pointLight position={[-10, -10, -10]} intensity={0.5} color="#06B6D4" />
           <FlowingCodeStream />
           <JourneyPath />
+          <InteractiveSphere />
+          <RotatingRings />
+          <FloatingCodeCubes />
           <FloatingTechOrb position={[-4, 2, 0]} color="#61DAFB" icon="react" />
           <FloatingTechOrb position={[4, -1, 2]} color="#3178C6" icon="typescript" />
           <FloatingTechOrb position={[-3, -2, 1]} color="#F7DF1E" icon="javascript" />

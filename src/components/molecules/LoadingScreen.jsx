@@ -32,7 +32,7 @@ const LoadingScreen = () => {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-gradient-to-br from-slate-900 via-teal-900 to-blue-900"
         >
           {/* Animated background particles */}
           <div className="absolute inset-0 overflow-hidden">
@@ -40,20 +40,20 @@ const LoadingScreen = () => {
               <motion.div
                 key={i}
                 initial={{
-                  x: Math.random() * window.innerWidth,
-                  y: Math.random() * window.innerHeight,
-                  scale: Math.random() * 0.5 + 0.5
+                  x: (i * 137) % window.innerWidth,
+                  y: (i * 71) % window.innerHeight,
+                  scale: 0.5 + ((i * 17) % 50) / 100
                 }}
                 animate={{
-                  y: [null, Math.random() * window.innerHeight],
+                  y: [null, ((i * 83) % window.innerHeight)],
                   opacity: [0.2, 0.8, 0.2]
                 }}
                 transition={{
-                  duration: Math.random() * 3 + 2,
+                  duration: 2 + ((i * 23) % 300) / 100,
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="absolute w-1 h-1 bg-blue-400 rounded-full"
+                className="absolute w-1 h-1 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full"
               />
             ))}
           </div>
@@ -71,7 +71,7 @@ const LoadingScreen = () => {
                   backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                 }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+                className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent"
                 style={{ backgroundSize: '200% auto' }}
               >
                 MA
@@ -88,7 +88,7 @@ const LoadingScreen = () => {
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(progress, 100)}%` }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-full"
                 />
                 <motion.div
                   animate={{
@@ -137,7 +137,7 @@ const LoadingScreen = () => {
                     repeat: Infinity,
                     delay: i * 0.2
                   }}
-                  className="w-3 h-3 bg-purple-500 rounded-full"
+                  className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"
                 />
               ))}
             </motion.div>

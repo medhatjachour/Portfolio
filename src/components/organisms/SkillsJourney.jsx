@@ -13,6 +13,50 @@ import {
 } from 'react-icons/si';
 
 /**
+ * Animated DNA Helix - representing growth and evolution
+ */
+const DNAHelix = () => {
+  const groupRef = useRef();
+  
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.2;
+    }
+  });
+
+  const helixPoints = React.useMemo(() => {
+    const points = [];
+    for (let i = 0; i < 100; i++) {
+      const t = (i / 100) * Math.PI * 4;
+      points.push({
+        x: Math.cos(t) * 2,
+        y: (i / 100) * 8 - 4,
+        z: Math.sin(t) * 2,
+        color: i < 25 ? '#10B981' : i < 50 ? '#06B6D4' : i < 75 ? '#3B82F6' : '#8B5CF6'
+      });
+    }
+    return points;
+  }, []);
+
+  return (
+    <group ref={groupRef}>
+      {helixPoints.map((point, i) => (
+        <mesh key={i} position={[point.x, point.y, point.z]}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshStandardMaterial 
+            color={point.color} 
+            emissive={point.color}
+            emissiveIntensity={0.5}
+            transparent
+            opacity={0.8}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+/**
  * Flowing skill particles that blend with the page
  * Representing the continuous learning journey
  */
@@ -175,6 +219,7 @@ const SkillsJourney = () => {
           <pointLight position={[5, 5, 5]} intensity={0.6} color="#10B981" />
           <pointLight position={[-5, -5, -5]} intensity={0.4} color="#6366F1" />
           
+          <DNAHelix />
           <SkillParticles skills={allSkills} />
           
           {/* Floating tech orbs representing different skill areas */}

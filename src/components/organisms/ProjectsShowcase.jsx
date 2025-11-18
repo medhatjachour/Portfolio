@@ -12,6 +12,88 @@ import ProjectFilter from '../molecules/ProjectFilter';
 import GitHubStats from '../molecules/GitHubStats';
 
 /**
+ * Floating Geometric Shapes - representing different project types
+ */
+const FloatingGeometry = () => {
+  const group = useRef();
+  
+  useFrame((state) => {
+    if (group.current) {
+      group.current.rotation.y = state.clock.elapsedTime * 0.1;
+      group.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.2;
+    }
+  });
+
+  return (
+    <group ref={group}>
+      {/* Octahedrons */}
+      <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+        <mesh position={[-3, 2, -2]}>
+          <octahedronGeometry args={[0.7, 0]} />
+          <MeshDistortMaterial
+            color="#10B981"
+            distort={0.4}
+            speed={2}
+            transparent
+            opacity={0.6}
+            emissive="#10B981"
+            emissiveIntensity={0.4}
+          />
+        </mesh>
+      </Float>
+
+      {/* Icosahedrons */}
+      <Float speed={1.5} rotationIntensity={0.8} floatIntensity={1.5}>
+        <mesh position={[3, -1, -3]}>
+          <icosahedronGeometry args={[0.8, 0]} />
+          <MeshDistortMaterial
+            color="#3B82F6"
+            distort={0.5}
+            speed={1.5}
+            transparent
+            opacity={0.6}
+            emissive="#3B82F6"
+            emissiveIntensity={0.4}
+          />
+        </mesh>
+      </Float>
+
+      {/* Dodecahedrons */}
+      <Float speed={1.8} rotationIntensity={1.2} floatIntensity={1.8}>
+        <mesh position={[-2, -2, -4]}>
+          <dodecahedronGeometry args={[0.6, 0]} />
+          <MeshDistortMaterial
+            color="#8B5CF6"
+            distort={0.3}
+            speed={2.5}
+            transparent
+            opacity={0.6}
+            emissive="#8B5CF6"
+            emissiveIntensity={0.4}
+          />
+        </mesh>
+      </Float>
+
+      {/* Tetrahedrons */}
+      <Float speed={2.2} rotationIntensity={1.5} floatIntensity={2.5}>
+        <mesh position={[2, 2, -2]}>
+          <tetrahedronGeometry args={[0.9, 0]} />
+          <MeshDistortMaterial
+            color="#06B6D4"
+            distort={0.4}
+            speed={1.8}
+            transparent
+            opacity={0.6}
+            emissive="#06B6D4"
+            emissiveIntensity={0.4}
+          />
+        </mesh>
+      </Float>
+    </group>
+  );
+};
+
+/**
  * Floating project orbs in the background - blend naturally, no boxes
  */
 const ProjectOrbs = () => {
@@ -176,6 +258,7 @@ const ProjectsShowcase = () => {
           <pointLight position={[5, 5, 5]} intensity={0.6} color="#10B981" />
           <pointLight position={[-5, -5, -5]} intensity={0.4} color="#EC4899" />
           
+          <FloatingGeometry />
           <ProjectOrbs />
         </Canvas>
       </div>
