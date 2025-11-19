@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial } from '@react-three/drei';
+// eslint-disable-next-line no-unused-vars
 import { motion, useInView } from 'framer-motion';
 import * as THREE from 'three';
 import { FaGithub, FaExternalLinkAlt, FaCode, FaRocket } from 'react-icons/fa';

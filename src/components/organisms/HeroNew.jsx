@@ -1,10 +1,10 @@
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Text, MeshDistortMaterial, Float, useScroll } from '@react-three/drei';
+import { Text,  Float } from '@react-three/drei';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll as useFramerScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
-import Button from '../atoms/Button';
-import { FaGithub, FaLinkedin, FaDownload, FaCode, FaMicrosoft } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaDownload,  FaMicrosoft } from 'react-icons/fa';
 import { SiReact, SiPython, SiTypescript, SiJavascript } from 'react-icons/si';
 
 /**
@@ -14,25 +14,31 @@ const StarrySky = () => {
   const starsRef = useRef();
   const starCount = 5000;
   
-  const { positions, sizes, colors } = useMemo(() => {
+  const { positions,  colors } = useMemo(() => {
+    // Seeded random function for deterministic results
+    const pseudoRandom = (seed) => {
+      const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    
     const pos = new Float32Array(starCount * 3);
     const size = new Float32Array(starCount);
     const cols = new Float32Array(starCount * 3);
     
     for (let i = 0; i < starCount; i++) {
       // Distribute stars across the sky
-      pos[i * 3] = (Math.random() - 0.5) * 50;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 30;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 40 - 10;
+      pos[i * 3] = (pseudoRandom(i * 3) - 0.5) * 50;
+      pos[i * 3 + 1] = (pseudoRandom(i * 3 + 1) - 0.5) * 30;
+      pos[i * 3 + 2] = (pseudoRandom(i * 3 + 2) - 0.5) * 40 - 10;
       
       // Varying star sizes
-      size[i] = Math.random() * 0.5 + 0.1;
+      size[i] = pseudoRandom(i * 7) * 0.5 + 0.1;
       
       // White to blue-white stars
-      const brightness = 0.8 + Math.random() * 0.2;
+      const brightness = 0.8 + pseudoRandom(i * 11) * 0.2;
       cols[i * 3] = brightness;
       cols[i * 3 + 1] = brightness;
-      cols[i * 3 + 2] = 0.9 + Math.random() * 0.1;
+      cols[i * 3 + 2] = 0.9 + pseudoRandom(i * 13) * 0.1;
     }
     
     return { positions: pos, sizes: size, colors: cols };
@@ -81,17 +87,31 @@ const FloatingCode = () => {
   
   const codeSnippets = useMemo(() => {
     const snippets = [
-      // Essential Keywords
-      'const', 'function', 'async', 'await', 'class',
+   // Programming Keywords
+      'const', 'function', 'return', 'import', 'export',
+      'async', 'await', 'class', 'extends', 'interface',
+    
       
-      // Popular Frameworks
-      'React', 'Node.js', 'TypeScript', 'Next.js',
+      // Operators & Syntax
+      '=>', '{}', '[]', '()', '===', '!==', '&&', '||',
+      '...', '?.', '??', '<>', '/>', '`${}`',
       
-      // Key Concepts
-      'API', 'Docker', 'Git', 'AWS',
+      // Frameworks & Libraries
+      'React', 'Node.js', 'TypeScript', 'Next.js', 
+     'Express', 'FastAPI', 'PYQT', 
       
-      // Common Operators
-      '=>', '{}', '[]', '()'
+      // Concepts
+      'API', 'REST', 'GraphQL', 'DB', 'SQL', 'NoSQL',
+      'Docker', 'K8s', 'CI/CD', 'Git', 'AWS', 'Azure',
+      'Redux', 'State', 'Props', 'Hooks', 'JSX', 'CSS',
+      
+      // Methods & Functions
+      'map()', 'filter()', 'reduce()', 'forEach()', 'find()',
+      'push()', 'pop()', 'shift()', 'splice()', 'slice()',
+      
+      // Common terms
+      'component', 'render', 'useState', 'useEffect', 'props',
+      'callback', 'promise', 'fetch', 'axios', 'query'
     ];
     
     // Seeded random using index
@@ -109,7 +129,7 @@ const FloatingCode = () => {
       ],
       rotation: pseudoRandom(i * 7) * Math.PI * 2,
       speed: 0.3 + pseudoRandom(i * 11) * 1.2,
-      fontSize: 0.2 + pseudoRandom(i * 13) * 0.3,
+      fontSize: 0.15 + pseudoRandom(i * 13) * 0.2,
       color: ['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#14B8A6'][i % 7]
     }));
   }, []);
@@ -306,7 +326,7 @@ const Moon = () => {
 
   return (
     <Float speed={0.5} rotationIntensity={0.1} floatIntensity={0.3}>
-      <mesh ref={moonRef} position={[8, 6, -20]}>
+      <mesh ref={moonRef} position={[-20, 12, -20]}>
         <sphereGeometry args={[2, 32, 32]} />
         <meshStandardMaterial
           color="#E8E8E8"
@@ -392,7 +412,7 @@ const HeroNew = () => {
             className="flex justify-center mb-8"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-600 rounded-full blur-xl opacity-60 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-800 via-blue-800 to-green-800 rounded-full blur-xl opacity-60 animate-pulse"></div>
               <img 
                 src="/profile.png" 
                 alt="Medhat Ashour" 
@@ -454,19 +474,22 @@ const HeroNew = () => {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="flex flex-wrap justify-center gap-4"
           >
-            {techBadges.map(({ Icon, label, color }, index) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
-                whileHover={{ scale: 1.1, y: -5 }}
-                className="flex items-center gap-2 px-4 py-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-full shadow-lg hover:bg-white/20 transition-all"
-              >
-                <Icon className={`text-2xl ${color}`} />
-                <span className="text-white font-medium">{label}</span>
-              </motion.div>
-            ))}
+            {techBadges.map((badge, index) => {
+              const IconComponent = badge.Icon;
+              return (
+                <motion.div
+                  key={badge.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  className="flex items-center gap-2 px-4 py-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-full shadow-lg hover:bg-white/20 transition-all"
+                >
+                  <IconComponent className={`text-2xl ${badge.color}`} />
+                  <span className="text-white font-medium">{badge.label}</span>
+                </motion.div>
+              );
+            })}
           </motion.div>
 
           {/* CTA Buttons */}
