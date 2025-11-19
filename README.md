@@ -4,7 +4,7 @@ A modern, responsive portfolio website built with React, featuring interactive 3
 
 ## 🌟 Live Demo
 
-**[View Live Portfolio](https://portfolio-lcbiz7e2v-medhatjachours-projects.vercel.app/](https://portfolio-ashy-eight-57.vercel.app/))**
+**[View Live Portfolio](https://portfolio-ashy-eight-57.vercel.app/))**
 
 Experience the starry night sky theme with floating code snippets, dynamic animations, and interactive 3D elements!
 
