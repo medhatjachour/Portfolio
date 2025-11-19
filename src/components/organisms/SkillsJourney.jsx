@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Text3D, Center } from '@react-three/drei';
+// eslint-disable-next-line no-unused-vars
 import { motion, useInView } from 'framer-motion';
 import * as THREE from 'three';
 import {

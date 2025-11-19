@@ -1,85 +1,77 @@
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Text, MeshDistortMaterial, Float, useScroll } from '@react-three/drei';
+import { Text,  Float } from '@react-three/drei';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll as useFramerScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
-import Button from '../atoms/Button';
-import { FaGithub, FaLinkedin, FaDownload, FaCode, FaMicrosoft } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaDownload,  FaMicrosoft } from 'react-icons/fa';
 import { SiReact, SiPython, SiTypescript, SiJavascript } from 'react-icons/si';
 
 /**
- * Flowing Code Stream - represents the journey of a software engineer
- * Code flows naturally through the scene, not confined to boxes
+ * Starry Sky - thousands of twinkling stars
  */
-const FlowingCodeStream = () => {
-  const streamRef = useRef();
-  const particlesCount = 3000;
+const StarrySky = () => {
+  const starsRef = useRef();
+  const starCount = 5000;
   
-  const { positions, colors } = useMemo(() => {
-    const pos = new Float32Array(particlesCount * 3);
-    const cols = new Float32Array(particlesCount * 3);
+  const { positions,  colors } = useMemo(() => {
+    // Seeded random function for deterministic results
+    const pseudoRandom = (seed) => {
+      const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
     
-    // Create flowing streams that represent code/data flow
-    for (let i = 0; i < particlesCount; i++) {
-      const t = i / particlesCount;
-      const stream = Math.floor(t * 8);  // 8 parallel streams
+    const pos = new Float32Array(starCount * 3);
+    const size = new Float32Array(starCount);
+    const cols = new Float32Array(starCount * 3);
+    
+    for (let i = 0; i < starCount; i++) {
+      // Distribute stars across the sky
+      pos[i * 3] = (pseudoRandom(i * 3) - 0.5) * 50;
+      pos[i * 3 + 1] = (pseudoRandom(i * 3 + 1) - 0.5) * 30;
+      pos[i * 3 + 2] = (pseudoRandom(i * 3 + 2) - 0.5) * 40 - 10;
       
-      // Flowing from left to right like code execution
-      pos[i * 3] = (t * 20) - 10 + (Math.random() - 0.5);
-      pos[i * 3 + 1] = Math.sin(t * 10 + stream) * 3 + (stream - 4) * 0.8;
-      pos[i * 3 + 2] = -Math.cos(t * 8 + stream) * 4 + (Math.random() - 0.5) * 2;
+      // Varying star sizes
+      size[i] = pseudoRandom(i * 7) * 0.5 + 0.1;
       
-      // Color gradient from green (start) to blue (experienced) to purple (advanced)
-      const colorPhase = t * 3;
-      if (colorPhase < 1) {
-        // Green (early career)
-        cols[i * 3] = 0.1;
-        cols[i * 3 + 1] = 0.8;
-        cols[i * 3 + 2] = 0.5;
-      } else if (colorPhase < 2) {
-        // Blue (growth)
-        cols[i * 3] = 0.4;
-        cols[i * 3 + 1] = 0.6;
-        cols[i * 3 + 2] = 1.0;
-      } else {
-        // Purple (mastery - Microsoft SRE)
-        cols[i * 3] = 0.7;
-        cols[i * 3 + 1] = 0.3;
-        cols[i * 3 + 2] = 0.9;
-      }
+      // White to blue-white stars
+      const brightness = 0.8 + pseudoRandom(i * 11) * 0.2;
+      cols[i * 3] = brightness;
+      cols[i * 3 + 1] = brightness;
+      cols[i * 3 + 2] = 0.9 + pseudoRandom(i * 13) * 0.1;
     }
-    return { positions: pos, colors: cols };
+    
+    return { positions: pos, sizes: size, colors: cols };
   }, []);
 
   useFrame((state) => {
-    if (streamRef.current) {
-      // Continuous flow animation
-      streamRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.3;
-      streamRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.15) * 0.5;
+    if (starsRef.current) {
+      // Subtle rotation to simulate sky movement
+      starsRef.current.rotation.y = state.clock.elapsedTime * 0.01;
     }
   });
 
   return (
-    <points ref={streamRef}>
+    <points ref={starsRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={particlesCount}
+          count={starCount}
           array={positions}
           itemSize={3}
         />
         <bufferAttribute
           attach="attributes-color"
-          count={particlesCount}
+          count={starCount}
           array={colors}
           itemSize={3}
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.02}
+        size={0.05}
         vertexColors
         transparent
-        opacity={0.6}
+        opacity={0.8}
         sizeAttenuation
         blending={THREE.AdditiveBlending}
       />
@@ -88,186 +80,262 @@ const FlowingCodeStream = () => {
 };
 
 /**
- * Floating Tech Symbols - representing the technologies in Medhat's journey
- * No boxes, just floating naturally in the space
+ * Floating Code Snippets - code fragments floating in the sky
  */
-const FloatingTechOrb = ({ position, color, scale = 1, speed = 1 }) => {
-  const meshRef = useRef();
+const FloatingCode = () => {
+  const groupRef = useRef();
   
+  const codeSnippets = useMemo(() => {
+    const snippets = [
+   // Programming Keywords
+      'const', 'function', 'return', 'import', 'export',
+      'async', 'await', 'class', 'extends', 'interface',
+    
+      
+      // Operators & Syntax
+      '=>', '{}', '[]', '()', '===', '!==', '&&', '||',
+      '...', '?.', '??', '<>', '/>', '`${}`',
+      
+      // Frameworks & Libraries
+      'React', 'Node.js', 'TypeScript', 'Next.js', 
+     'Express', 'FastAPI', 'PYQT', 
+      
+      // Concepts
+      'API', 'REST', 'GraphQL', 'DB', 'SQL', 'NoSQL',
+      'Docker', 'K8s', 'CI/CD', 'Git', 'AWS', 'Azure',
+      'Redux', 'State', 'Props', 'Hooks', 'JSX', 'CSS',
+      
+      // Methods & Functions
+      'map()', 'filter()', 'reduce()', 'forEach()', 'find()',
+      'push()', 'pop()', 'shift()', 'splice()', 'slice()',
+      
+      // Common terms
+      'component', 'render', 'useState', 'useEffect', 'props',
+      'callback', 'promise', 'fetch', 'axios', 'query'
+    ];
+    
+    // Seeded random using index
+    const pseudoRandom = (seed) => {
+      const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    
+    return snippets.map((text, i) => ({
+      text,
+      position: [
+        (pseudoRandom(i * 3) - 0.5) * 30,
+        (pseudoRandom(i * 3 + 1) - 0.5) * 20,
+        (pseudoRandom(i * 3 + 2) - 0.5) * 15 - 5
+      ],
+      rotation: pseudoRandom(i * 7) * Math.PI * 2,
+      speed: 0.3 + pseudoRandom(i * 11) * 1.2,
+      fontSize: 0.15 + pseudoRandom(i * 13) * 0.2,
+      color: ['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#14B8A6'][i % 7]
+    }));
+  }, []);
+
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * speed * 0.3;
-      meshRef.current.rotation.y = state.clock.elapsedTime * speed * 0.5;
-      meshRef.current.position.y += Math.sin(state.clock.elapsedTime * speed) * 0.001;
+    if (groupRef.current) {
+      groupRef.current.children.forEach((child, i) => {
+        child.position.y = codeSnippets[i].position[1] + Math.sin(state.clock.elapsedTime * codeSnippets[i].speed + i) * 0.5;
+        child.rotation.y = state.clock.elapsedTime * 0.15 + codeSnippets[i].rotation;
+        child.rotation.z = Math.sin(state.clock.elapsedTime * 0.1 + i) * 0.1;
+      });
     }
   });
 
   return (
-    <Float speed={speed} rotationIntensity={0.5} floatIntensity={0.8}>
-      <mesh ref={meshRef} position={position} scale={scale}>
-        <icosahedronGeometry args={[0.5, 0]} />
-        <MeshDistortMaterial
-          color={color}
-          attach="material"
-          distort={0.4}
-          speed={2}
-          roughness={0.1}
-          metalness={0.9}
-          emissive={color}
-          emissiveIntensity={0.4}
-          transparent
-          opacity={0.7}
+    <group ref={groupRef}>
+      {codeSnippets.map((snippet, i) => (
+        <Text
+          key={i}
+          position={snippet.position}
+          fontSize={snippet.fontSize}
+          color={snippet.color}
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.02}
+          outlineColor="#000000"
+        >
+          {snippet.text}
+        </Text>
+      ))}
+    </group>
+  );
+};
+
+/**
+ * Shooting Stars - occasional streaks across the sky
+ */
+const ShootingStar = ({ delay = 0, startPos = [10, 5, -5] }) => {
+  const starRef = useRef();
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [startPosition] = React.useState(startPos);
+  
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        setIsVisible(true);
+        setTimeout(() => {
+          setIsVisible(false);
+          if (starRef.current) {
+            starRef.current.position.set(...startPosition);
+          }
+        }, 2000);
+      }, 8000);
+      
+      return () => clearInterval(interval);
+    }, delay);
+    
+    return () => clearTimeout(timeout);
+  }, [delay, startPosition]);
+
+  useFrame(() => {
+    if (starRef.current && isVisible) {
+      starRef.current.position.x -= 0.15;
+      starRef.current.position.y -= 0.08;
+    }
+  });
+
+  if (!isVisible) return null;
+
+  return (
+    <group>
+      <mesh ref={starRef} position={startPosition}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
+      </mesh>
+      {/* Trail effect */}
+      <mesh position={[startPosition[0] + 0.3, startPosition[1] + 0.15, startPosition[2]]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
+      </mesh>
+    </group>
+  );
+};
+
+/**
+ * Extra Floating Stars - additional twinkling stars in various sizes
+ */
+const FloatingStars = () => {
+  const starsRef = useRef();
+  
+  const stars = useMemo(() => {
+    const starArray = [];
+    for (let i = 0; i < 100; i++) {
+      const pseudoRandom = (seed) => {
+        const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+        return x - Math.floor(x);
+      };
+      
+      starArray.push({
+        position: [
+          (pseudoRandom(i * 5) - 0.5) * 40,
+          (pseudoRandom(i * 5 + 1) - 0.5) * 25,
+          (pseudoRandom(i * 5 + 2) - 0.5) * 20 - 5
+        ],
+        scale: 0.5 + pseudoRandom(i * 7) * 1.5,
+        speed: 0.5 + pseudoRandom(i * 9) * 2,
+        delay: pseudoRandom(i * 11) * Math.PI * 2
+      });
+    }
+    return starArray;
+  }, []);
+
+  useFrame((state) => {
+    if (starsRef.current) {
+      starsRef.current.children.forEach((star, i) => {
+        const opacity = 0.3 + Math.sin(state.clock.elapsedTime * stars[i].speed + stars[i].delay) * 0.7;
+        if (star.material) {
+          star.material.opacity = opacity;
+        }
+      });
+    }
+  });
+
+  return (
+    <group ref={starsRef}>
+      {stars.map((star, i) => (
+        <mesh key={i} position={star.position} scale={star.scale}>
+          <sphereGeometry args={[0.03, 6, 6]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+/**
+ * Constellation Lines - connecting stars to form patterns
+ */
+const Constellations = () => {
+  const linesRef = useRef();
+  
+  const { positions } = useMemo(() => {
+    const pos = [];
+    const constellations = [
+      // Big Dipper
+      [[-8, 5, -10], [-6, 6, -10], [-4, 5.5, -10], [-2, 5, -10]],
+      // Orion's Belt
+      [[2, 0, -12], [4, -0.5, -12], [6, -1, -12]],
+      // Random constellation
+      [[-5, -3, -8], [-3, -2, -8], [-1, -3.5, -8]]
+    ];
+    
+    constellations.forEach(constellation => {
+      for (let i = 0; i < constellation.length - 1; i++) {
+        pos.push(...constellation[i], ...constellation[i + 1]);
+      }
+    });
+    
+    return { positions: new Float32Array(pos) };
+  }, []);
+
+  useFrame((state) => {
+    if (linesRef.current) {
+      linesRef.current.material.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+    }
+  });
+
+  return (
+    <lineSegments ref={linesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={positions.length / 3}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <lineBasicMaterial color="#4FB3D4" transparent opacity={0.3} />
+    </lineSegments>
+  );
+};
+
+/**
+ * Moon - glowing moon in the background
+ */
+const Moon = () => {
+  const moonRef = useRef();
+  
+  useFrame((state) => {
+    if (moonRef.current) {
+      moonRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+    }
+  });
+
+  return (
+    <Float speed={0.5} rotationIntensity={0.1} floatIntensity={0.3}>
+      <mesh ref={moonRef} position={[-20, 12, -20]}>
+        <sphereGeometry args={[2, 32, 32]} />
+        <meshStandardMaterial
+          color="#E8E8E8"
+          emissive="#C9C9C9"
+          emissiveIntensity={0.5}
+          roughness={0.8}
         />
       </mesh>
     </Float>
-  );
-};
-
-/**
- * Journey Timeline Visualization - subtle 3D elements showing career progression
- */
-const JourneyPath = () => {
-  const pathRef = useRef();
-  
-  const pathPoints = useMemo(() => {
-    const points = [];
-    for (let i = 0; i < 50; i++) {
-      const t = i / 50;
-      // Create a rising path (career growth)
-      points.push(new THREE.Vector3(
-        (t - 0.5) * 12,
-        t * 3 - 1,
-        Math.sin(t * Math.PI * 2) * 2
-      ));
-    }
-    return new THREE.CatmullRomCurve3(points);
-  }, []);
-
-  useFrame((state) => {
-    if (pathRef.current) {
-      pathRef.current.material.opacity = 0.15 + Math.sin(state.clock.elapsedTime) * 0.05;
-    }
-  });
-
-  return (
-    <mesh ref={pathRef}>
-      <tubeGeometry args={[pathPoints, 50, 0.02, 8, false]} />
-      <meshBasicMaterial color="#10B981" transparent opacity={0.15} />
-    </mesh>
-  );
-};
-
-/**
- * Interactive Sphere with Mouse Follow - creates engaging user interaction
- */
-const InteractiveSphere = () => {
-  const meshRef = useRef();
-  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
-
-  React.useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: -(e.clientY / window.innerHeight) * 2 + 1
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.01;
-      meshRef.current.rotation.y += 0.01;
-      // Follow mouse smoothly
-      meshRef.current.position.x += (mousePos.x * 2 - meshRef.current.position.x) * 0.05;
-      meshRef.current.position.y += (mousePos.y * 2 - meshRef.current.position.y) * 0.05;
-    }
-  });
-
-  return (
-    <mesh ref={meshRef} position={[0, 0, 0]}>
-      <sphereGeometry args={[1.5, 64, 64]} />
-      <MeshDistortMaterial
-        color="#10B981"
-        attach="material"
-        distort={0.6}
-        speed={3}
-        roughness={0}
-        metalness={0.8}
-        emissive="#10B981"
-        emissiveIntensity={0.3}
-        transparent
-        opacity={0.5}
-      />
-    </mesh>
-  );
-};
-
-/**
- * Rotating Rings - adds depth and motion
- */
-const RotatingRings = () => {
-  const ring1Ref = useRef();
-  const ring2Ref = useRef();
-  const ring3Ref = useRef();
-
-  useFrame((state) => {
-    if (ring1Ref.current) ring1Ref.current.rotation.x = state.clock.elapsedTime * 0.5;
-    if (ring2Ref.current) ring2Ref.current.rotation.y = state.clock.elapsedTime * 0.7;
-    if (ring3Ref.current) ring3Ref.current.rotation.z = state.clock.elapsedTime * 0.3;
-  });
-
-  return (
-    <group position={[5, 0, -2]}>
-      <mesh ref={ring1Ref}>
-        <torusGeometry args={[2, 0.05, 16, 100]} />
-        <meshBasicMaterial color="#3B82F6" transparent opacity={0.4} />
-      </mesh>
-      <mesh ref={ring2Ref}>
-        <torusGeometry args={[2.3, 0.05, 16, 100]} />
-        <meshBasicMaterial color="#06B6D4" transparent opacity={0.4} />
-      </mesh>
-      <mesh ref={ring3Ref}>
-        <torusGeometry args={[2.6, 0.05, 16, 100]} />
-        <meshBasicMaterial color="#10B981" transparent opacity={0.4} />
-      </mesh>
-    </group>
-  );
-};
-
-/**
- * Floating Code Cubes - interactive elements that respond to scroll
- */
-const FloatingCodeCubes = () => {
-  const groupRef = useRef();
-  
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.5;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.3;
-    }
-  });
-
-  return (
-    <group ref={groupRef} position={[-5, 0, -1]}>
-      {[...Array(5)].map((_, i) => (
-        <Float key={i} speed={2 + i * 0.5} rotationIntensity={1} floatIntensity={2}>
-          <mesh position={[i * 0.8 - 2, i * 0.5 - 1, i * 0.3]}>
-            <boxGeometry args={[0.4, 0.4, 0.4]} />
-            <MeshDistortMaterial
-              color={['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899'][i]}
-              distort={0.3}
-              speed={2}
-              transparent
-              opacity={0.7}
-              emissive={['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899'][i]}
-              emissiveIntensity={0.5}
-            />
-          </mesh>
-        </Float>
-      ))}
-    </group>
   );
 };
 
@@ -291,32 +359,43 @@ const HeroNew = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 from-white via-slate-50 to-blue-50">
-      {/* Flowing 3D Background - transparent and blended */}
-      <div className="absolute inset-0 z-0" style={{ opacity: 0.4 }}>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br dark:from-[#0a0e27] dark:via-[#0f1729] dark:to-[#050810] from-[#1a1f3a] via-[#151b2e] to-[#0a0e1f]">
+      {/* Starry Sky Background */}
+      <div className="absolute inset-0 z-0">
         <Canvas
           ref={canvasRef}
           camera={{ position: [0, 0, 10], fov: 75 }}
           gl={{ alpha: true, antialias: true }}
           style={{ background: 'transparent' }}
         >
-          <ambientLight intensity={0.3} />
-          <pointLight position={[10, 10, 10]} intensity={0.8} />
-          <pointLight position={[-10, -10, -10]} intensity={0.5} color="#06B6D4" />
-          <FlowingCodeStream />
-          <JourneyPath />
-          <InteractiveSphere />
-          <RotatingRings />
-          <FloatingCodeCubes />
-          <FloatingTechOrb position={[-4, 2, 0]} color="#61DAFB" icon="react" />
-          <FloatingTechOrb position={[4, -1, 2]} color="#3178C6" icon="typescript" />
-          <FloatingTechOrb position={[-3, -2, 1]} color="#F7DF1E" icon="javascript" />
-          <FloatingTechOrb position={[3, 2, -1]} color="#3776AB" icon="python" />
-          <FloatingTechOrb position={[0, -3, 2]} color="#68A063" icon="nodejs" />
+          <ambientLight intensity={0.2} />
+          <pointLight position={[10, 10, 10]} intensity={0.3} color="#ffffff" />
+          <pointLight position={[-10, -10, -5]} intensity={0.2} color="#4FB3D4" />
+          
+          {/* Starry Sky - Main background stars */}
+          <StarrySky />
+          
+          {/* Extra Floating Stars - Larger twinkling stars */}
+          <FloatingStars />
+          
+          {/* Floating Code - Software terms and syntax */}
+          <FloatingCode />
+          
+          {/* Constellations */}
+          <Constellations />
+          
+          {/* Moon */}
+          <Moon />
+          
+          {/* Shooting Stars */}
+          <ShootingStar delay={0} startPos={[12, 8, -8]} />
+          <ShootingStar delay={2500} startPos={[-10, 6, -6]} />
+          <ShootingStar delay={5000} startPos={[8, -5, -10]} />
+          <ShootingStar delay={7500} startPos={[-8, 4, -7]} />
         </Canvas>
         
-        {/* Gradient overlay to blend 3D with content */}
-        <div className="absolute inset-0 bg-gradient-to-b dark:from-transparent dark:via-black/20 dark:to-slate-900/80 from-transparent via-white/10 to-white/30 pointer-events-none" />
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 from-transparent via-[#0a0e27]/40 to-[#050810]/80 pointer-events-none" />
       </div>
 
       {/* Content Layer */}
@@ -333,7 +412,7 @@ const HeroNew = () => {
             className="flex justify-center mb-8"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-600 rounded-full blur-xl opacity-60 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-800 via-blue-800 to-green-800 rounded-full blur-xl opacity-60 animate-pulse"></div>
               <img 
                 src="/profile.png" 
                 alt="Medhat Ashour" 
@@ -358,12 +437,12 @@ const HeroNew = () => {
               💭 everything in my imagination is possible
             </motion.p>
 
-            <h1 className="text-6xl md:text-8xl font-bold dark:text-white text-gray-900 leading-tight">
+            <h1 className="text-6xl md:text-8xl font-bold text-white leading-tight">
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="block"
+                className="block text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
               >
                 Medhat Ashour
               </motion.span>
@@ -371,7 +450,7 @@ const HeroNew = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
-                className="block bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-600 bg-clip-text text-transparent"
+                className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]"
               >
                 Software Engineer
               </motion.span>
@@ -381,10 +460,10 @@ const HeroNew = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="text-xl md:text-2xl dark:text-gray-300 text-gray-700 max-w-3xl mx-auto"
+              className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
             >
-              Software Engineer @ <span className="dark:text-blue-400 text-blue-600 font-semibold">Microsoft</span> | 
-              Building the future with <span className="dark:text-emerald-400 text-emerald-600">4+ years</span> of crafting scalable solutions
+              Software Engineer @ <span className="text-cyan-400 font-semibold">Microsoft</span> | 
+              Building the future with <span className="text-emerald-400">4+ years</span> of crafting scalable solutions
             </motion.p>
           </motion.div>
 
@@ -395,19 +474,22 @@ const HeroNew = () => {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="flex flex-wrap justify-center gap-4"
           >
-            {techBadges.map(({ Icon, label, color }, index) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
-                whileHover={{ scale: 1.1, y: -5 }}
-                className="flex items-center gap-2 px-4 py-2 backdrop-blur-md dark:bg-white/5 bg-white dark:border-white/10 border-slate-200 rounded-full shadow-lg"
-              >
-                <Icon className={`text-2xl ${color}`} />
-                <span className="dark:text-white text-slate-900 font-medium">{label}</span>
-              </motion.div>
-            ))}
+            {techBadges.map((badge, index) => {
+              const IconComponent = badge.Icon;
+              return (
+                <motion.div
+                  key={badge.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  className="flex items-center gap-2 px-4 py-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-full shadow-lg hover:bg-white/20 transition-all"
+                >
+                  <IconComponent className={`text-2xl ${badge.color}`} />
+                  <span className="text-white font-medium">{badge.label}</span>
+                </motion.div>
+              );
+            })}
           </motion.div>
 
           {/* CTA Buttons */}
@@ -422,7 +504,7 @@ const HeroNew = () => {
               download
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/50 transition-all"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/50 transition-all"
             >
               <FaDownload />
               Download Resume
@@ -434,7 +516,7 @@ const HeroNew = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 backdrop-blur-md dark:bg-white/5 bg-white border-2 dark:border-white/20 border-slate-300 dark:text-white text-slate-900 rounded-xl font-bold text-lg hover:border-emerald-500 dark:hover:bg-white/10 hover:bg-emerald-50 transition-all shadow-lg"
+              className="inline-flex items-center gap-3 px-8 py-4 backdrop-blur-md bg-white/10 border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:border-cyan-400 hover:bg-white/20 transition-all shadow-lg"
             >
               <FaGithub />
               View My Work
@@ -446,7 +528,7 @@ const HeroNew = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 backdrop-blur-md dark:bg-white/5 bg-white border-2 dark:border-white/20 border-slate-300 dark:text-white text-slate-900 rounded-xl font-bold text-lg hover:border-blue-500 dark:hover:bg-white/10 hover:bg-blue-50 transition-all shadow-lg"
+              className="inline-flex items-center gap-3 px-8 py-4 backdrop-blur-md bg-white/10 border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:border-blue-400 hover:bg-white/20 transition-all shadow-lg"
             >
               <FaLinkedin />
               Connect

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -8,6 +9,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [typedText, setTypedText] = useState('');
+  const fullText = '💭 everything in my imagination is possible';
+
+  // Typing effect
+  useEffect(() => {
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setTypedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 80); // Typing speed
+
+    return () => clearInterval(typingInterval);
+  }, []);
 
   useEffect(() => {
     // Simulate loading progress
@@ -142,14 +160,19 @@ const LoadingScreen = () => {
               ))}
             </motion.div>
 
-            {/* Tagline */}
+            {/* Tagline with typing effect */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}
-              className="mt-8 text-gray-400 italic"
+              className="mt-8 text-gray-400 italic text-lg"
             >
-              "💭 everything in my imagination is possible"
+              {typedText}
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="inline-block w-0.5 h-5 bg-cyan-400 ml-1"
+              />
             </motion.p>
           </div>
         </motion.div>
