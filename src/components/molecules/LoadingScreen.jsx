@@ -10,6 +10,8 @@ const LoadingScreen = () => {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [typedText, setTypedText] = useState('');
+  const [typingComplete, setTypingComplete] = useState(false);
+  const [showShine, setShowShine] = useState(false);
   const fullText = '💭 everything in my imagination is possible';
 
   // Typing effect
@@ -21,27 +23,38 @@ const LoadingScreen = () => {
         currentIndex++;
       } else {
         clearInterval(typingInterval);
+        setTypingComplete(true);
       }
     }, 80); // Typing speed
 
     return () => clearInterval(typingInterval);
   }, []);
 
+  // Shine effect after typing is complete
   useEffect(() => {
-    // Simulate loading progress
+    if (typingComplete) {
+      setTimeout(() => {
+        setShowShine(true);
+      }, 300);
+    }
+  }, [typingComplete]);
+
+  useEffect(() => {
+    // Simulate loading progress - slower to match typing
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        if (prev >= 100 && typingComplete && showShine) {
           clearInterval(interval);
-          setTimeout(() => setIsLoading(false), 500);
+          setTimeout(() => setIsLoading(false), 800);
           return 100;
         }
-        return prev + Math.random() * 15;
+        // Slower progress to wait for typing
+        return prev + Math.random() * 8;
       });
-    }, 200);
+    }, 250);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [typingComplete, showShine]);
 
   return (
     <AnimatePresence>
@@ -161,19 +174,38 @@ const LoadingScreen = () => {
             </motion.div>
 
             {/* Tagline with typing effect */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
-              className="mt-8 text-gray-400 italic text-lg"
-            >
-              {typedText}
-              <motion.span
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="inline-block w-0.5 h-5 bg-cyan-400 ml-1"
-              />
-            </motion.p>
+            <motion.div className="relative mt-8">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="text-gray-400 italic text-lg relative z-10"
+              >
+                {typedText}
+                {!typingComplete && (
+                  <motion.span
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 0.8, repeat: Infinity }}
+                    className="inline-block w-0.5 h-5 bg-cyan-400 ml-1"
+                  />
+                )}
+              </motion.p>
+              
+              {/* Shine effect after typing completes */}
+              {showShine && (
+                <motion.div
+                  initial={{ x: '-100%' }}
+                  animate={{ x: '200%' }}
+                  transition={{ 
+                    duration: 1.5, 
+                    ease: "easeInOut",
+                    repeat: 2
+                  }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent blur-sm"
+                  style={{ width: '50%' }}
+                />
+              )}
+            </motion.div>
           </div>
         </motion.div>
       )}

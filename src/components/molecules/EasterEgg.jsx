@@ -133,32 +133,31 @@ const EasterEgg = () => {
               transition={{ type: "spring", duration: 1 }}
               className="text-center p-12 max-w-4xl"
             >
-              {/* MEGA Title */}
+              {/* Title */}
               <motion.div
                 animate={{ 
-                  scale: [1, 1.05, 1],
-                  rotateZ: [0, 2, -2, 0]
+                  scale: [1, 1.02, 1],
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ duration: 3, repeat: Infinity }}
                 className="mb-8"
               >
-                <h1 className="text-8xl md:text-9xl font-black mb-4">
-                  <span className="bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-600 bg-clip-text text-transparent drop-shadow-2xl">
-                    MEGA+
+                <h1 className="text-7xl md:text-8xl font-black mb-4">
+                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent drop-shadow-2xl">
+                    🌟 You Found Me!
                   </span>
                 </h1>
-                <p className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  🎮 Konami Code Unlocked!
+                <p className="text-2xl md:text-3xl font-bold text-cyan-400 mb-2">
+                  Secret code: mga+ unlocked
                 </p>
               </motion.div>
 
-              {/* Achievement Cards */}
+              {/* Personal Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {[
-                  { icon: FaCode, label: 'Code Master', color: 'from-emerald-500 to-teal-400' },
-                  { icon: FaRocket, label: 'Innovation', color: 'from-blue-500 to-cyan-400' },
-                  { icon: FaMicrosoft, label: 'SRE Expert', color: 'from-purple-500 to-pink-400' },
-                  { icon: FaHeart, label: 'Passion', color: 'from-pink-500 to-rose-400' }
+                  { icon: FaCode, label: 'Full-Stack Dev', color: 'from-cyan-500 to-blue-400' },
+                  { icon: FaMicrosoft, label: 'Microsoft SRE', color: 'from-blue-500 to-purple-400' },
+                  { icon: FaRocket, label: 'Dream Builder', color: 'from-purple-500 to-pink-400' },
+                  { icon: FaHeart, label: 'Problem Solver', color: 'from-pink-500 to-rose-400' }
                 ].map((item, i) => (
                   <motion.div
                     key={item.label}
@@ -176,30 +175,33 @@ const EasterEgg = () => {
                 ))}
               </div>
 
-              {/* Quote */}
+              {/* Personal Quote */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
-                className="backdrop-blur-xl bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-2 border-purple-400 rounded-2xl p-8 mb-8"
+                className="backdrop-blur-xl bg-gradient-to-r from-cyan-900/50 to-blue-900/50 border-2 border-cyan-400 rounded-2xl p-8 mb-8"
               >
-                <p className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 mb-4">
+                <p className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-4">
                   💭 "Everything in my imagination is possible"
                 </p>
-                <p className="text-xl text-gray-300">
-                  From Electrical Engineering student to Microsoft SRE
+                <p className="text-xl text-gray-300 mb-3">
+                  Hi! I'm Medhat, a software engineer who loves turning ideas into reality.
                 </p>
-                <p className="text-lg text-gray-400 mt-2">
-                  Built with ❤️ using React, Three.js & Imagination
+                <p className="text-lg text-gray-400">
+                  From electrical engineering to Microsoft SRE, coding has been my superpower.
+                </p>
+                <p className="text-base text-cyan-400 mt-3 font-semibold">
+                  🚀 Building the future, one line of code at a time
                 </p>
               </motion.div>
 
-              {/* Stats */}
+              {/* Personal Stats */}
               <div className="grid grid-cols-3 gap-4 mb-8">
                 {[
-                  { value: '4+', label: 'Years Experience' },
-                  { value: '9+', label: 'Major Projects' },
-                  { value: '∞', label: 'Possibilities' }
+                  { value: '∞', label: 'Lines of Code' },
+                  { value: '24/7', label: 'Learning Mode' },
+                  { value: '💯', label: 'Dedication' }
                 ].map((stat, i) => (
                   <motion.div
                     key={stat.label}
