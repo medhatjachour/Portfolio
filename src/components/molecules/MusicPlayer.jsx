@@ -13,25 +13,31 @@ const MusicPlayer = () => {
   const [showControls, setShowControls] = useState(false);
   const audioRef = useRef(null);
 
-  // You can replace this with your own ambient music file
-  const musicUrl = 'https://www.bensound.com/bensound-music/bensound-creativeminds.mp3';
-
+  // Cool ambient space/coding music
+  const musicUrl = 'https://www.bensound.com/bensound-music/bensound-theelevatorbossanova.mp3';
+  
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
-      if (isPlaying) {
-        audioRef.current.play().catch(err => console.log('Audio play failed:', err));
-      } else {
-        audioRef.current.pause();
-      }
     }
-  }, [isPlaying, volume]);
+  }, [volume]);
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleVolumeChange = (e) => {
+  const togglePlay = async () => {
+    if (!audioRef.current) return;
+    
+    try {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        await audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } catch (err) {
+      console.log('Audio toggle failed:', err);
+      setIsPlaying(false);
+    }
+  };  const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
   };
