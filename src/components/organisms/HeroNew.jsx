@@ -81,22 +81,50 @@ const FloatingCode = () => {
   
   const codeSnippets = useMemo(() => {
     const snippets = [
+      // Programming Keywords
       'const', 'function', 'return', 'import', 'export',
-      'async', 'await', 'class', 'extends', 'if',
-      '=>', '{}', '[]', '()', '===',
-      'React', 'Node', 'API', 'DB', 'UI'
+      'async', 'await', 'class', 'extends', 'interface',
+      'type', 'enum', 'public', 'private', 'static',
+      
+      // Operators & Syntax
+      '=>', '{}', '[]', '()', '===', '!==', '&&', '||',
+      '...', '?.', '??', '<>', '/>', '`${}`',
+      
+      // Frameworks & Libraries
+      'React', 'Node.js', 'TypeScript', 'Next.js', 'Vue',
+      'Angular', 'Express', 'FastAPI', 'Django', 'Flask',
+      
+      // Concepts
+      'API', 'REST', 'GraphQL', 'DB', 'SQL', 'NoSQL',
+      'Docker', 'K8s', 'CI/CD', 'Git', 'AWS', 'Azure',
+      'Redux', 'State', 'Props', 'Hooks', 'JSX', 'CSS',
+      
+      // Methods & Functions
+      'map()', 'filter()', 'reduce()', 'forEach()', 'find()',
+      'push()', 'pop()', 'shift()', 'splice()', 'slice()',
+      
+      // Common terms
+      'component', 'render', 'useState', 'useEffect', 'props',
+      'callback', 'promise', 'fetch', 'axios', 'query'
     ];
+    
+    // Seeded random using index
+    const pseudoRandom = (seed) => {
+      const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
     
     return snippets.map((text, i) => ({
       text,
       position: [
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 10 - 5
+        (pseudoRandom(i * 3) - 0.5) * 30,
+        (pseudoRandom(i * 3 + 1) - 0.5) * 20,
+        (pseudoRandom(i * 3 + 2) - 0.5) * 15 - 5
       ],
-      rotation: Math.random() * Math.PI * 2,
-      speed: 0.5 + Math.random() * 1.5,
-      color: ['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899'][i % 5]
+      rotation: pseudoRandom(i * 7) * Math.PI * 2,
+      speed: 0.3 + pseudoRandom(i * 11) * 1.2,
+      fontSize: 0.2 + pseudoRandom(i * 13) * 0.3,
+      color: ['#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#14B8A6'][i % 7]
     }));
   }, []);
 
@@ -104,7 +132,8 @@ const FloatingCode = () => {
     if (groupRef.current) {
       groupRef.current.children.forEach((child, i) => {
         child.position.y = codeSnippets[i].position[1] + Math.sin(state.clock.elapsedTime * codeSnippets[i].speed + i) * 0.5;
-        child.rotation.y = state.clock.elapsedTime * 0.2 + codeSnippets[i].rotation;
+        child.rotation.y = state.clock.elapsedTime * 0.15 + codeSnippets[i].rotation;
+        child.rotation.z = Math.sin(state.clock.elapsedTime * 0.1 + i) * 0.1;
       });
     }
   });
@@ -115,7 +144,7 @@ const FloatingCode = () => {
         <Text
           key={i}
           position={snippet.position}
-          fontSize={0.3}
+          fontSize={snippet.fontSize}
           color={snippet.color}
           anchorX="center"
           anchorY="middle"
@@ -132,33 +161,101 @@ const FloatingCode = () => {
 /**
  * Shooting Stars - occasional streaks across the sky
  */
-const ShootingStar = ({ delay = 0 }) => {
+const ShootingStar = ({ delay = 0, startPos = [10, 5, -5] }) => {
   const starRef = useRef();
   const [isVisible, setIsVisible] = React.useState(false);
+  const [startPosition] = React.useState(startPos);
   
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setIsVisible(true);
-      setTimeout(() => setIsVisible(false), 2000);
-    }, 8000 + delay);
+    const timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        setIsVisible(true);
+        setTimeout(() => {
+          setIsVisible(false);
+          if (starRef.current) {
+            starRef.current.position.set(...startPosition);
+          }
+        }, 2000);
+      }, 8000);
+      
+      return () => clearInterval(interval);
+    }, delay);
     
-    return () => clearInterval(interval);
-  }, [delay]);
+    return () => clearTimeout(timeout);
+  }, [delay, startPosition]);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (starRef.current && isVisible) {
-      starRef.current.position.x -= 0.1;
-      starRef.current.position.y -= 0.05;
+      starRef.current.position.x -= 0.15;
+      starRef.current.position.y -= 0.08;
     }
   });
 
   if (!isVisible) return null;
 
   return (
-    <mesh ref={starRef} position={[10, 5, -5]}>
-      <sphereGeometry args={[0.05, 8, 8]} />
-      <meshBasicMaterial color="#ffffff" />
-    </mesh>
+    <group>
+      <mesh ref={starRef} position={startPosition}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
+      </mesh>
+      {/* Trail effect */}
+      <mesh position={[startPosition[0] + 0.3, startPosition[1] + 0.15, startPosition[2]]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
+      </mesh>
+    </group>
+  );
+};
+
+/**
+ * Extra Floating Stars - additional twinkling stars in various sizes
+ */
+const FloatingStars = () => {
+  const starsRef = useRef();
+  
+  const stars = useMemo(() => {
+    const starArray = [];
+    for (let i = 0; i < 100; i++) {
+      const pseudoRandom = (seed) => {
+        const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+        return x - Math.floor(x);
+      };
+      
+      starArray.push({
+        position: [
+          (pseudoRandom(i * 5) - 0.5) * 40,
+          (pseudoRandom(i * 5 + 1) - 0.5) * 25,
+          (pseudoRandom(i * 5 + 2) - 0.5) * 20 - 5
+        ],
+        scale: 0.5 + pseudoRandom(i * 7) * 1.5,
+        speed: 0.5 + pseudoRandom(i * 9) * 2,
+        delay: pseudoRandom(i * 11) * Math.PI * 2
+      });
+    }
+    return starArray;
+  }, []);
+
+  useFrame((state) => {
+    if (starsRef.current) {
+      starsRef.current.children.forEach((star, i) => {
+        const opacity = 0.3 + Math.sin(state.clock.elapsedTime * stars[i].speed + stars[i].delay) * 0.7;
+        if (star.material) {
+          star.material.opacity = opacity;
+        }
+      });
+    }
+  });
+
+  return (
+    <group ref={starsRef}>
+      {stars.map((star, i) => (
+        <mesh key={i} position={star.position} scale={star.scale}>
+          <sphereGeometry args={[0.03, 6, 6]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
+        </mesh>
+      ))}
+    </group>
   );
 };
 
@@ -269,10 +366,13 @@ const HeroNew = () => {
           <pointLight position={[10, 10, 10]} intensity={0.3} color="#ffffff" />
           <pointLight position={[-10, -10, -5]} intensity={0.2} color="#4FB3D4" />
           
-          {/* Starry Sky */}
+          {/* Starry Sky - Main background stars */}
           <StarrySky />
           
-          {/* Floating Code */}
+          {/* Extra Floating Stars - Larger twinkling stars */}
+          <FloatingStars />
+          
+          {/* Floating Code - Software terms and syntax */}
           <FloatingCode />
           
           {/* Constellations */}
@@ -282,9 +382,10 @@ const HeroNew = () => {
           <Moon />
           
           {/* Shooting Stars */}
-          <ShootingStar delay={0} />
-          <ShootingStar delay={3000} />
-          <ShootingStar delay={6000} />
+          <ShootingStar delay={0} startPos={[12, 8, -8]} />
+          <ShootingStar delay={2500} startPos={[-10, 6, -6]} />
+          <ShootingStar delay={5000} startPos={[8, -5, -10]} />
+          <ShootingStar delay={7500} startPos={[-8, 4, -7]} />
         </Canvas>
         
         {/* Gradient overlay for depth */}
