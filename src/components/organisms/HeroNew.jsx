@@ -81,31 +81,17 @@ const FloatingCode = () => {
   
   const codeSnippets = useMemo(() => {
     const snippets = [
-      // Programming Keywords
-      'const', 'function', 'return', 'import', 'export',
-      'async', 'await', 'class', 'extends', 'interface',
-      'type', 'enum', 'public', 'private', 'static',
+      // Essential Keywords
+      'const', 'function', 'async', 'await', 'class',
       
-      // Operators & Syntax
-      '=>', '{}', '[]', '()', '===', '!==', '&&', '||',
-      '...', '?.', '??', '<>', '/>', '`${}`',
+      // Popular Frameworks
+      'React', 'Node.js', 'TypeScript', 'Next.js',
       
-      // Frameworks & Libraries
-      'React', 'Node.js', 'TypeScript', 'Next.js', 'Vue',
-      'Angular', 'Express', 'FastAPI', 'Django', 'Flask',
+      // Key Concepts
+      'API', 'Docker', 'Git', 'AWS',
       
-      // Concepts
-      'API', 'REST', 'GraphQL', 'DB', 'SQL', 'NoSQL',
-      'Docker', 'K8s', 'CI/CD', 'Git', 'AWS', 'Azure',
-      'Redux', 'State', 'Props', 'Hooks', 'JSX', 'CSS',
-      
-      // Methods & Functions
-      'map()', 'filter()', 'reduce()', 'forEach()', 'find()',
-      'push()', 'pop()', 'shift()', 'splice()', 'slice()',
-      
-      // Common terms
-      'component', 'render', 'useState', 'useEffect', 'props',
-      'callback', 'promise', 'fetch', 'axios', 'query'
+      // Common Operators
+      '=>', '{}', '[]', '()'
     ];
     
     // Seeded random using index

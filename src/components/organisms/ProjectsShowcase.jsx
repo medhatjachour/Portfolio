@@ -12,80 +12,95 @@ import ProjectFilter from '../molecules/ProjectFilter';
 import GitHubStats from '../molecules/GitHubStats';
 
 /**
- * Floating Geometric Shapes - representing different project types
+ * Floating Stars and Circles - representing different project types
  */
-const FloatingGeometry = () => {
+const FloatingStarsAndCircles = () => {
   const group = useRef();
   
   useFrame((state) => {
     if (group.current) {
-      group.current.rotation.y = state.clock.elapsedTime * 0.1;
-      group.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.2;
+      group.current.rotation.y = state.clock.elapsedTime * 0.05;
     }
   });
 
   return (
     <group ref={group}>
-      {/* Octahedrons */}
+      {/* Star shapes */}
       <Float speed={2} rotationIntensity={1} floatIntensity={2}>
         <mesh position={[-3, 2, -2]}>
-          <octahedronGeometry args={[0.7, 0]} />
-          <MeshDistortMaterial
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshStandardMaterial
             color="#10B981"
-            distort={0.4}
-            speed={2}
             transparent
             opacity={0.6}
             emissive="#10B981"
-            emissiveIntensity={0.4}
+            emissiveIntensity={0.5}
           />
         </mesh>
       </Float>
 
-      {/* Icosahedrons */}
       <Float speed={1.5} rotationIntensity={0.8} floatIntensity={1.5}>
         <mesh position={[3, -1, -3]}>
-          <icosahedronGeometry args={[0.8, 0]} />
-          <MeshDistortMaterial
+          <sphereGeometry args={[0.35, 16, 16]} />
+          <meshStandardMaterial
             color="#3B82F6"
-            distort={0.5}
-            speed={1.5}
             transparent
             opacity={0.6}
             emissive="#3B82F6"
-            emissiveIntensity={0.4}
+            emissiveIntensity={0.5}
           />
         </mesh>
       </Float>
 
-      {/* Dodecahedrons */}
       <Float speed={1.8} rotationIntensity={1.2} floatIntensity={1.8}>
         <mesh position={[-2, -2, -4]}>
-          <dodecahedronGeometry args={[0.6, 0]} />
-          <MeshDistortMaterial
+          <sphereGeometry args={[0.25, 16, 16]} />
+          <meshStandardMaterial
             color="#8B5CF6"
-            distort={0.3}
-            speed={2.5}
             transparent
             opacity={0.6}
             emissive="#8B5CF6"
-            emissiveIntensity={0.4}
+            emissiveIntensity={0.5}
           />
         </mesh>
       </Float>
 
-      {/* Tetrahedrons */}
       <Float speed={2.2} rotationIntensity={1.5} floatIntensity={2.5}>
         <mesh position={[2, 2, -2]}>
-          <tetrahedronGeometry args={[0.9, 0]} />
-          <MeshDistortMaterial
+          <sphereGeometry args={[0.4, 16, 16]} />
+          <meshStandardMaterial
             color="#06B6D4"
-            distort={0.4}
-            speed={1.8}
             transparent
             opacity={0.6}
             emissive="#06B6D4"
-            emissiveIntensity={0.4}
+            emissiveIntensity={0.5}
+          />
+        </mesh>
+      </Float>
+
+      {/* Additional glowing circles */}
+      <Float speed={1.2} rotationIntensity={0.5} floatIntensity={1}>
+        <mesh position={[0, 3, -3]}>
+          <sphereGeometry args={[0.2, 16, 16]} />
+          <meshStandardMaterial
+            color="#EC4899"
+            transparent
+            opacity={0.7}
+            emissive="#EC4899"
+            emissiveIntensity={0.6}
+          />
+        </mesh>
+      </Float>
+
+      <Float speed={1.7} rotationIntensity={0.6} floatIntensity={1.3}>
+        <mesh position={[-4, 0, -5]}>
+          <sphereGeometry args={[0.15, 16, 16]} />
+          <meshStandardMaterial
+            color="#F59E0B"
+            transparent
+            opacity={0.7}
+            emissive="#F59E0B"
+            emissiveIntensity={0.6}
           />
         </mesh>
       </Float>
@@ -258,7 +273,7 @@ const ProjectsShowcase = () => {
           <pointLight position={[5, 5, 5]} intensity={0.6} color="#10B981" />
           <pointLight position={[-5, -5, -5]} intensity={0.4} color="#EC4899" />
           
-          <FloatingGeometry />
+          <FloatingStarsAndCircles />
           <ProjectOrbs />
         </Canvas>
       </div>
