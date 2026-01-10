@@ -14,7 +14,7 @@ const MusicPlayer = () => {
   const audioRef = useRef(null);
 
   // Local music file
-  const musicUrl = '/Runaway.mp3';
+  const musicUrl = '/interstellar.mp3';
   
   useEffect(() => {
     if (audioRef.current) {
