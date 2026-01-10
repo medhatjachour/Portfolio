@@ -150,7 +150,7 @@ const TechOrb = ({ position, color, scale = 1 }) => {
  */
 const SkillsJourney = () => {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, amount: 0.05, margin: "0px 0px -100px 0px" });
 
   // The story: organized by career milestones
   const journey = [
@@ -237,10 +237,12 @@ const SkillsJourney = () => {
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="text-center mb-16 sm:mb-20"
+          style={{
+            opacity: isInView ? 1 : 0,
+            transform: isInView ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'all 0.6s ease'
+          }}
         >
           <motion.span 
             className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-gradient-to-r from-emerald-500/20 to-purple-500/20 backdrop-blur-sm border border-emerald-500/30 text-emerald-400 font-semibold text-sm"
@@ -260,14 +262,16 @@ const SkillsJourney = () => {
         </motion.div>
 
         {/* The Journey Timeline */}
-        <div className="space-y-24">
+        <div className="space-y-16 sm:space-y-24">
           {journey.map((milestone, index) => (
             <motion.div
               key={milestone.phase}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
               className="relative"
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: isInView ? 'translateY(0)' : 'translateY(30px)',
+                transition: `all 0.6s ease ${index * 0.15}s`
+              }}
             >
               {/* Timeline connector */}
               {index < journey.length - 1 && (
@@ -279,7 +283,9 @@ const SkillsJourney = () => {
                 <div className={`mb-8 lg:mb-0 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                   <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="backdrop-blur-md bg-gradient-to-br from-white/5 to-white/10 rounded-3xl p-8 border border-white/10"
+                    className="backdrop-blur-md bg-gradient-to-br from-white/5 to-white/10 rounded-3xl p-6 sm:p-8 border border-white/10"
+                    style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateX(0)' : `translateX(${index % 2 === 0 ? '-20px' : '20px'})` }}
+                    transition={{ duration: 0.6 }}
                   >
                     <span className="inline-block px-3 py-1 mb-4 rounded-full bg-gradient-to-r from-emerald-500/30 to-blue-500/30 text-emerald-400 text-sm font-bold">
                       {milestone.period}
@@ -309,11 +315,13 @@ const SkillsJourney = () => {
                     {milestone.skills.map((skill, skillIndex) => (
                       <motion.div
                         key={skill.name}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                        transition={{ duration: 0.5, delay: index * 0.2 + skillIndex * 0.1 }}
                         whileHover={{ scale: 1.05, y: -5 }}
-                        className="backdrop-blur-md bg-gradient-to-br from-white/5 to-white/10 rounded-2xl p-6 border border-white/10 hover:border-emerald-400/50 transition-all"
+                        className="backdrop-blur-md bg-gradient-to-br from-white/5 to-white/10 rounded-2xl p-4 sm:p-6 border border-white/10 hover:border-emerald-400/50 transition-all"
+                        style={{ 
+                          opacity: isInView ? 1 : 0, 
+                          transform: isInView ? 'scale(1)' : 'scale(0.9)',
+                          transition: `all 0.5s ease ${index * 0.15 + skillIndex * 0.08}s`
+                        }}
                       >
                         <div className="flex items-center gap-3 mb-3">
                           <div 
@@ -329,10 +337,11 @@ const SkillsJourney = () => {
                         </div>
                         <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
                           <motion.div
-                            initial={{ width: 0 }}
-                            animate={isInView ? { width: `${skill.level}%` } : {}}
-                            transition={{ duration: 1, delay: index * 0.2 + skillIndex * 0.1 + 0.5 }}
                             className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-blue-500"
+                            style={{ 
+                              width: isInView ? `${skill.level}%` : '0%',
+                              transition: `width 1s ease ${index * 0.15 + skillIndex * 0.08 + 0.3}s`
+                            }}
                           />
                         </div>
                       </motion.div>
@@ -346,10 +355,12 @@ const SkillsJourney = () => {
 
         {/* Current Focus */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="mt-24 text-center"
+          className="mt-16 sm:mt-24 text-center"
+          style={{
+            opacity: isInView ? 1 : 0,
+            transform: isInView ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'all 0.6s ease 0.8s'
+          }}
         >
           <div className="backdrop-blur-md bg-gradient-to-br from-emerald-500/10 to-purple-500/10 rounded-3xl p-8 border border-emerald-400/30 max-w-3xl mx-auto">
             <h3 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-purple-500">
