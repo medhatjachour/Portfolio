@@ -409,14 +409,14 @@ const HeroNew = () => {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="flex justify-center mb-8"
+            className="flex justify-center mb-6"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-800 via-blue-800 to-green-800 rounded-full blur-xl opacity-60 animate-pulse"></div>
+              <div className="absolute inset-0 bg-cyan-500/30 rounded-full blur-2xl opacity-40 animate-pulse"></div>
               <img 
                 src="/profile.png" 
                 alt="Medhat Ashour" 
-                className="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-white/20 shadow-2xl"
+                className="relative w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border border-cyan-400/30 shadow-2xl"
               />
             </div>
           </motion.div>
@@ -424,114 +424,226 @@ const HeroNew = () => {
           {/* Animated Introduction */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="space-y-4"
+            animate={{ 
+              opacity: 1, 
+              y: [0, -10, 0],
+            }}
+            transition={{ 
+              opacity: { duration: 0.8, delay: 0.3 },
+              y: { 
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }}
+            className="relative space-y-3"
           >
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-emerald-400 text-lg font-semibold tracking-wide"
-            >
-              💭 everything in my imagination is possible
-            </motion.p>
+            {/* Cosmic particles around text */}
+            <div className="absolute inset-0 -z-10 pointer-events-none">
+              {[...Array(30)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-cyan-400/40 rounded-full blur-[0.5px]"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    opacity: [0.2, 1, 0.2],
+                    scale: [1, 2, 1],
+                    y: [0, -30, 0],
+                    x: [0, Math.random() * 20 - 10, 0],
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </div>
 
-            <h1 className="text-6xl md:text-8xl font-bold text-white leading-tight">
+            {/* Glowing backdrop with pulse */}
+            <motion.div 
+              className="absolute inset-0 -z-10 bg-gradient-radial from-cyan-500/10 via-blue-500/5 to-transparent blur-3xl"
+              animate={{
+                opacity: [0.3, 0.6, 0.3],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+
+            <motion.h1 
+              className="text-6xl md:text-8xl font-light tracking-wide leading-tight"
+              animate={{
+                y: [0, -5, 0],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
               <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="block text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                initial={{ opacity: 0 }}
+                animate={{ 
+                  opacity: [0.85, 1, 0.85],
+                }}
+                transition={{ 
+                  opacity: { duration: 0.5, delay: 0.3 },
+                  default: {
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }
+                }}
+                className="block text-white/90 drop-shadow-[0_0_50px_rgba(6,182,212,0.5)]"
               >
                 Medhat Ashour
               </motion.span>
-              <motion.span
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]"
-              >
-                Software Engineer
-              </motion.span>
-            </h1>
+            </motion.h1>
 
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+              animate={{ 
+                opacity: [0.8, 1, 0.8],
+                y: [0, -3, 0],
+              }}
+              transition={{ 
+                opacity: { duration: 0.8, delay: 0.6 },
+                y: {
+                  duration: 4.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.5,
+                }
+              }}
+              className="text-2xl md:text-3xl text-cyan-400/90 font-light tracking-wider drop-shadow-[0_0_30px_rgba(6,182,212,0.4)]"
             >
-              Software Engineer @ <span className="text-cyan-400 font-semibold">Microsoft</span> | 
-              Building the future with <span className="text-emerald-400">4+ years</span> of crafting scalable solutions
+              Software Engineer @ Microsoft
             </motion.p>
-          </motion.div>
-
-          {/* Tech Badges */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            {techBadges.map((badge, index) => {
-              const IconComponent = badge.Icon;
-              return (
-                <motion.div
-                  key={badge.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
-                  whileHover={{ scale: 1.1, y: -5 }}
-                  className="flex items-center gap-2 px-4 py-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-full shadow-lg hover:bg-white/20 transition-all"
-                >
-                  <IconComponent className={`text-2xl ${badge.color}`} />
-                  <span className="text-white font-medium">{badge.label}</span>
-                </motion.div>
-              );
-            })}
+            
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: [0.6, 0.9, 0.6],
+                y: [0, -2, 0],
+              }}
+              transition={{ 
+                opacity: { duration: 0.8, delay: 0.9 },
+                y: {
+                  duration: 5.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }
+              }}
+              className="text-sm md:text-base text-gray-400/70 italic font-light max-w-2xl mx-auto pt-3"
+            >
+              💭 everything in my imagination is possible
+            </motion.p>
           </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-wrap justify-center gap-6"
+            animate={{ 
+              opacity: 1, 
+              y: [0, -8, 0],
+            }}
+            transition={{ 
+              opacity: { duration: 0.8, delay: 1.2 },
+              y: {
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1.5,
+              }
+            }}
+            className="flex flex-wrap justify-center gap-4 pt-6"
           >
-            <motion.a
-              href="/medhat frontend engineer.pdf"
-              download
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/50 transition-all"
-            >
-              <FaDownload />
-              Download Resume
-            </motion.a>
-
             <motion.a
               href="https://github.com/medhatjachour"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                boxShadow: "0 0 25px rgba(6,182,212,0.3)",
+              }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 backdrop-blur-md bg-white/10 border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:border-cyan-400 hover:bg-white/20 transition-all shadow-lg"
+              animate={{
+                y: [0, -3, 0],
+              }}
+              transition={{
+                y: {
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/5 border border-white/20 text-white rounded-lg font-light hover:border-cyan-400/50 hover:bg-white/10 transition-all"
             >
-              <FaGithub />
-              View My Work
+              <FaGithub className="text-lg" />
+              <span>GitHub</span>
             </motion.a>
 
             <motion.a
               href="https://linkedin.com/in/medhatjachour"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                boxShadow: "0 0 25px rgba(6,182,212,0.3)",
+              }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-8 py-4 backdrop-blur-md bg-white/10 border-2 border-white/20 text-white rounded-xl font-bold text-lg hover:border-blue-400 hover:bg-white/20 transition-all shadow-lg"
+              animate={{
+                y: [0, -3, 0],
+              }}
+              transition={{
+                y: {
+                  duration: 3.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.5,
+                }
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/5 border border-white/20 text-white rounded-lg font-light hover:border-cyan-400/50 hover:bg-white/10 transition-all"
             >
-              <FaLinkedin />
-              Connect
+              <FaLinkedin className="text-lg" />
+              <span>LinkedIn</span>
+            </motion.a>
+            
+            <motion.a
+              href="/medhat frontend engineer.pdf"
+              download
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                boxShadow: "0 0 25px rgba(6,182,212,0.3)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              animate={{
+                y: [0, -3, 0],
+              }}
+              transition={{
+                y: {
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/10 border border-cyan-400/30 text-white rounded-lg font-light hover:border-cyan-400 hover:bg-white/15 transition-all"
+            >
+              <FaDownload className="text-lg" />
+              <span>Resume</span>
             </motion.a>
           </motion.div>
 

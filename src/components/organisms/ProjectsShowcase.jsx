@@ -171,6 +171,15 @@ const ProjectsShowcase = () => {
   // Real projects from Medhat's work
   const allProjects = [
     {
+      title: 'BizFlow',
+      description: 'Comprehensive business management platform for streamlining operations, workflow automation, and team collaboration. Built with modern technologies for scalability and real-time updates.',
+      techStack: ['React', 'TypeScript', 'Node.js', 'MongoDB'],
+      icons: [<SiReact />, <SiTypescript />, <SiNodedotjs />, <SiMongodb />],
+      githubUrl: 'https://github.com/medhatjachour/BizFlow',
+      category: 'Full Stack',
+      gradient: 'from-blue-500 to-purple-600'
+    },
+    {
       title: 'Mega Courses',
       description: 'A comprehensive Learning Management System where teachers can upload courses and students can enroll. Built with Next.js and AWS services for scalability and performance. Features include course management, student enrollment, and progress tracking.',
       techStack: ['Next.js', 'React', 'TypeScript', 'AWS', 'MongoDB'],
@@ -197,12 +206,12 @@ const ProjectsShowcase = () => {
       gradient: 'from-purple-500 to-pink-600'
     },
     {
-      title: 'MegaCare',
-      description: 'Patient management system designed to streamline healthcare workflows. Built with modern technologies for efficient data handling and patient record management.',
-      techStack: ['TypeScript', 'React', 'Node.js', 'PostgreSQL'],
-      icons: [<SiTypescript />, <SiReact />, <SiNodedotjs />, <SiPostgresql />],
-      githubUrl: 'https://github.com/medhatjachour/MegaCare',
-      category: 'Healthcare',
+      title: 'Velox Platform',
+      description: 'High-performance web platform built for speed and efficiency. Features modern architecture, optimized workflows, and seamless user experience with cutting-edge technologies.',
+      techStack: ['React', 'TypeScript', 'Node.js', 'MongoDB'],
+      icons: [<SiReact />, <SiTypescript />, <SiNodedotjs />, <SiMongodb />],
+      githubUrl: 'https://github.com/medhatjachour/velox-platform',
+      category: 'Full Stack',
       gradient: 'from-cyan-500 to-blue-600'
     },
     {
@@ -222,15 +231,7 @@ const ProjectsShowcase = () => {
       category: 'Desktop',
       gradient: 'from-yellow-500 to-orange-600'
     },
-    {
-      title: 'MERN Chat App',
-      description: 'Real-time chat application built with MERN stack and Socket.io. Features include real-time messaging, user authentication, and online status indicators.',
-      techStack: ['React', 'Node.js', 'MongoDB', 'Socket.io'],
-      icons: [<SiReact />, <SiNodedotjs />, <SiMongodb />],
-      githubUrl: 'https://github.com/medhatjachour/mern-chat-app',
-      category: 'Real-time',
-      gradient: 'from-green-500 to-emerald-600'
-    },
+
     {
       title: 'Mazboot 3D E-commerce',
       description: 'Innovative graduation project: 3D e-commerce platform combining human body models and product models for immersive shopping. Increased user engagement by 40% with an innovative 3D interface.',
@@ -240,12 +241,12 @@ const ProjectsShowcase = () => {
       gradient: 'from-pink-500 to-purple-600'
     },
     {
-      title: 'Financial Tracker',
-      description: 'Financial tracking application built with MERN stack. Features expense tracking, budget management, and financial analytics.',
+      title: 'Employee Management',
+      description: 'Comprehensive employee management system for HR operations. Features employee records, attendance tracking, performance management, and reporting dashboard.',
       techStack: ['React', 'Node.js', 'MongoDB', 'Express'],
       icons: [<SiReact />, <SiNodedotjs />, <SiMongodb />],
-      githubUrl: 'https://github.com/medhatjachour/treacker-with-mern',
-      category: 'Finance',
+      githubUrl: 'https://github.com/medhatjachour/employee-management',
+      category: 'Full Stack',
       gradient: 'from-indigo-500 to-blue-600'
     }
   ];
