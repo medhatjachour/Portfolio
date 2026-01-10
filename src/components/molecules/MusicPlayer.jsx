@@ -13,8 +13,8 @@ const MusicPlayer = () => {
   const [showControls, setShowControls] = useState(false);
   const audioRef = useRef(null);
 
-  // Cool ambient space/coding music
-  const musicUrl = 'https://www.bensound.com/bensound-music/bensound-theelevatorbossanova.mp3';
+  // Local music file
+  const musicUrl = '/Runaway.mp3';
   
   useEffect(() => {
     if (audioRef.current) {
