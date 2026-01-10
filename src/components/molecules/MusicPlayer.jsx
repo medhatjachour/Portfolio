@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaMusic, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
+import { FaMusic, FaVolumeUp, FaVolumeMute, FaPlay, FaPause } from 'react-icons/fa';
 
 /**
  * Background Music Player
@@ -17,25 +17,45 @@ const MusicPlayer = () => {
   const musicUrl = '/interstellar.mp3';
   
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = volume;
+      
+      // Sync state with actual audio playback
+      const handlePlay = () => setIsPlaying(true);
+      const handlePause = () => setIsPlaying(false);
+      const handleEnded = () => setIsPlaying(false);
+      
+      audio.addEventListener('play', handlePlay);
+      audio.addEventListener('pause', handlePause);
+      audio.addEventListener('ended', handleEnded);
+      
+      return () => {
+        audio.removeEventListener('play', handlePlay);
+        audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('ended', handleEnded);
+      };
     }
   }, [volume]);
 
-  const togglePlay = async () => {
-    if (!audioRef.current) return;
+  const togglePlay = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     
-    try {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        await audioRef.current.play();
-        setIsPlaying(true);
-      }
-    } catch (err) {
-      console.log('Audio toggle failed:', err);
-      setIsPlaying(false);
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+    
+    
+    if (audio.paused) {
+      audio.play().then(() => {
+        console.log('Play successful');
+      }).catch(err => {
+        console.log('Audio play failed:', err);
+      });
+    } else {
+      audio.pause();
     }
   };  const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
@@ -55,24 +75,29 @@ const MusicPlayer = () => {
         className="relative"
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => setShowControls(false)}
+        style={{ pointerEvents: 'auto' }}
       >
+        {/* Pulsing glow when playing - behind button */}
+        {isPlaying && (
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 opacity-30 blur-xl animate-pulse pointer-events-none" />
+        )}
+        
         {/* Main button */}
-        <motion.button
+        <button
           onClick={togglePlay}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md border-2 transition-all ${
+          type="button"
+          className={`relative z-10 w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md border-2 transition-all duration-300 cursor-pointer ${
             isPlaying
-              ? 'bg-gradient-to-r from-purple-500 to-pink-500 border-purple-500 shadow-lg shadow-purple-500/50'
-              : 'bg-white/10 border-white/20 hover:border-white/40'
+              ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 border-emerald-400 shadow-lg shadow-emerald-500/50'
+              : 'bg-white/10 border-white/20 hover:border-cyan-400/50'
           }`}
         >
           {isPlaying ? (
-            <FaMusic className="text-white text-xl animate-pulse" />
+            <FaPause className="text-white text-lg" />
           ) : (
-            <FaMusic className="text-white text-xl" />
+            <FaPlay className="text-white text-lg ml-0.5" />
           )}
-        </motion.button>
+        </button>
 
         {/* Volume controls */}
         <AnimatePresence>
@@ -83,6 +108,7 @@ const MusicPlayer = () => {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
               className="absolute left-16 top-1/2 -translate-y-1/2 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl p-3 flex items-center gap-3"
+              style={{ pointerEvents: 'auto' }}
             >
               <FaVolumeMute className="text-white text-sm" />
               <input
@@ -101,11 +127,6 @@ const MusicPlayer = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Pulsing glow when playing */}
-        {isPlaying && (
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 opacity-30 blur-xl animate-pulse" />
-        )}
       </motion.div>
     </div>
   );
