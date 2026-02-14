@@ -6,6 +6,7 @@ import { motion, useScroll as useFramerScroll, useTransform } from 'framer-motio
 import * as THREE from 'three';
 import { FaGithub, FaLinkedin, FaDownload,  FaMicrosoft } from 'react-icons/fa';
 import { SiReact, SiPython, SiTypescript, SiJavascript } from 'react-icons/si';
+import FloatingAstronaut from '../molecules/FloatingAstronaut';
 
 /**
  * Starry Sky - thousands of twinkling stars
@@ -378,6 +379,9 @@ const HeroNew = () => {
           {/* Extra Floating Stars - Larger twinkling stars */}
           <FloatingStars />
           
+          {/* Floating Astronaut - 3D animated astronaut */}
+          <FloatingAstronaut position={[0, 0, 2]} scale={1.2} />
+          
           {/* Floating Code - Software terms and syntax */}
           <FloatingCode />
           
@@ -404,23 +408,6 @@ const HeroNew = () => {
         className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center"
       >
         <div className="space-y-8">
-          {/* Profile Picture */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="flex justify-center mb-6"
-          >
-            <div className="relative">
-              <div className="absolute inset-0 bg-cyan-500/30 rounded-full blur-2xl opacity-40 animate-pulse"></div>
-              <img 
-                src="/profile.png" 
-                alt="Medhat Ashour" 
-                className="relative w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border border-cyan-400/30 shadow-2xl"
-              />
-            </div>
-          </motion.div>
-
           {/* Animated Introduction */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
