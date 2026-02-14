@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import HeroNew from '../components/organisms/HeroNew';
-import ProjectsShowcase from '../components/organisms/ProjectsShowcase';
-import Experience from '../components/organisms/Experience';
-import SkillsJourney from '../components/organisms/SkillsJourney';
-import Contact from '../components/organisms/Contact';
-import Footer from '../components/organisms/Footer';
+
+// Lazy load below-the-fold content for better initial load
+const ProjectsShowcase = lazy(() => import('../components/organisms/ProjectsShowcase'));
+const Experience = lazy(() => import('../components/organisms/Experience'));
+const SkillsJourney = lazy(() => import('../components/organisms/SkillsJourney'));
+const Contact = lazy(() => import('../components/organisms/Contact'));
+const Footer = lazy(() => import('../components/organisms/Footer'));
 
 /**
  * Home Page
@@ -21,12 +23,29 @@ const Home = () => {
   
   return (
     <div className="min-h-screen">
+      {/* Above-the-fold: Load immediately */}
       <HeroNew />
-      <SkillsJourney />
-      <Experience />
-      <ProjectsShowcase />
-      <Contact />
-      <Footer />
+      
+      {/* Below-the-fold: Lazy load with Suspense */}
+      <Suspense fallback={<div className="h-20 bg-transparent" />}>
+        <SkillsJourney />
+      </Suspense>
+      
+      <Suspense fallback={<div className="h-20 bg-transparent" />}>
+        <Experience />
+      </Suspense>
+      
+      <Suspense fallback={<div className="h-20 bg-transparent" />}>
+        <ProjectsShowcase />
+      </Suspense>
+      
+      <Suspense fallback={<div className="h-20 bg-transparent" />}>
+        <Contact />
+      </Suspense>
+      
+      <Suspense fallback={<div className="h-20 bg-transparent" />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 };

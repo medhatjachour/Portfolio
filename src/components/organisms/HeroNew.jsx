@@ -1,125 +1,119 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, memo, useCallback, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Text,  Float } from '@react-three/drei';
-// eslint-disable-next-line no-unused-vars
+import { Text, Float } from '@react-three/drei';
 import { motion, useScroll as useFramerScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
-import { FaGithub, FaLinkedin, FaDownload,  FaMicrosoft } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaDownload, FaMicrosoft } from 'react-icons/fa';
 import { SiReact, SiPython, SiTypescript, SiJavascript } from 'react-icons/si';
 
 /**
- * Starry Sky - thousands of twinkling stars
+ * Performance hook - detect device capabilities
  */
-const StarrySky = () => {
+const usePerformanceMode = () => {
+  const [mode, setMode] = useState('high');
+
+  useEffect(() => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const isLowEnd = navigator.hardwareConcurrency <= 4 || isMobile;
+    setMode(isLowEnd ? 'low' : 'high');
+  }, []);
+
+  return mode;
+};
+
+/**
+ * Optimized Starry Sky - Using InstancedMesh for better performance
+ * 5000 stars rendered efficiently
+ */
+const StarrySky = memo(() => {
   const starsRef = useRef();
   const starCount = 5000;
-  
-  const { positions,  colors } = useMemo(() => {
-    // Seeded random function for deterministic results
+  const performanceMode = usePerformanceMode();
+  const adjustedCount = performanceMode === 'low' ? 1000 : starCount;
+
+  // Frame throttling - only update every 3 frames
+  const frameCount = useRef(0);
+
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  const { positions, colors } = useMemo(() => {
     const pseudoRandom = (seed) => {
       const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
       return x - Math.floor(x);
     };
-    
-    const pos = new Float32Array(starCount * 3);
-    const size = new Float32Array(starCount);
-    const cols = new Float32Array(starCount * 3);
-    
-    for (let i = 0; i < starCount; i++) {
-      // Distribute stars across the sky
-      pos[i * 3] = (pseudoRandom(i * 3) - 0.5) * 50;
-      pos[i * 3 + 1] = (pseudoRandom(i * 3 + 1) - 0.5) * 30;
-      pos[i * 3 + 2] = (pseudoRandom(i * 3 + 2) - 0.5) * 40 - 10;
-      
-      // Varying star sizes
-      size[i] = pseudoRandom(i * 7) * 0.5 + 0.1;
-      
-      // White to blue-white stars
+
+    const pos = [];
+    const cols = [];
+
+    for (let i = 0; i < adjustedCount; i++) {
+      pos.push([
+        (pseudoRandom(i * 3) - 0.5) * 50,
+        (pseudoRandom(i * 3 + 1) - 0.5) * 30,
+        (pseudoRandom(i * 3 + 2) - 0.5) * 40 - 10
+      ]);
+
       const brightness = 0.8 + pseudoRandom(i * 11) * 0.2;
-      cols[i * 3] = brightness;
-      cols[i * 3 + 1] = brightness;
-      cols[i * 3 + 2] = 0.9 + pseudoRandom(i * 13) * 0.1;
+      cols.push(new THREE.Color(brightness, brightness, 0.9 + pseudoRandom(i * 13) * 0.1));
     }
-    
-    return { positions: pos, sizes: size, colors: cols };
-  }, []);
+
+    return { positions: pos, colors: cols };
+  }, [adjustedCount]);
 
   useFrame((state) => {
+    frameCount.current++;
+    // Update only every 3rd frame
+    if (frameCount.current %3 !== 0) return;
+
     if (starsRef.current) {
-      // Subtle rotation to simulate sky movement
       starsRef.current.rotation.y = state.clock.elapsedTime * 0.01;
     }
   });
 
   return (
-    <points ref={starsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={starCount}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={starCount}
-          array={colors}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.05}
-        vertexColors
-        transparent
-        opacity={0.8}
-        sizeAttenuation
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
+    <instancedMesh ref={starsRef} args={[null, null, adjustedCount]}>
+      <sphereGeometry args={[0.02, 4, 4]} />
+      <meshBasicMaterial vertexColors />
+      {positions.map((pos, i) => {
+        dummy.position.set(...pos);
+        dummy.updateMatrix();
+        starsRef.current?.setMatrixAt(i, dummy.matrix);
+        starsRef.current?.setColorAt(i, colors[i]);
+      })}
+    </instancedMesh>
   );
-};
+});
+
+StarrySky.displayName = 'StarrySky';
 
 /**
- * Floating Code Snippets - code fragments floating in the sky
+ * Optimized Floating Code - Reduced geometry complexity
  */
-const FloatingCode = () => {
+const FloatingCode = memo(() => {
   const groupRef = useRef();
-  
+  const frameCount = useRef(0);
+
   const codeSnippets = useMemo(() => {
     const snippets = [
-   // Programming Keywords
       'const', 'function', 'return', 'import', 'export',
       'async', 'await', 'class', 'extends', 'interface',
-    
-      
-      // Operators & Syntax
       '=>', '{}', '[]', '()', '===', '!==', '&&', '||',
       '...', '?.', '??', '<>', '/>', '`${}`',
-      
-      // Frameworks & Libraries
-      'React', 'Node.js', 'TypeScript', 'Next.js', 
-     'Express', 'FastAPI', 'PYQT', 
-      
-      // Concepts
+      'React', 'Node.js', 'TypeScript', 'Next.js',
+      'Express', 'FastAPI', 'PYQT',
       'API', 'REST', 'GraphQL', 'DB', 'SQL', 'NoSQL',
       'Docker', 'K8s', 'CI/CD', 'Git', 'AWS', 'Azure',
       'Redux', 'State', 'Props', 'Hooks', 'JSX', 'CSS',
-      
-      // Methods & Functions
       'map()', 'filter()', 'reduce()', 'forEach()', 'find()',
       'push()', 'pop()', 'shift()', 'splice()', 'slice()',
-      
-      // Common terms
       'component', 'render', 'useState', 'useEffect', 'props',
       'callback', 'promise', 'fetch', 'axios', 'query'
     ];
-    
-    // Seeded random using index
+
     const pseudoRandom = (seed) => {
       const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
       return x - Math.floor(x);
     };
-    
+
     return snippets.map((text, i) => ({
       text,
       position: [
@@ -135,10 +129,15 @@ const FloatingCode = () => {
   }, []);
 
   useFrame((state) => {
+    frameCount.current++;
+    // Update every 2 frames
+    if (frameCount.current % 2 !== 0) return;
+
     if (groupRef.current) {
       groupRef.current.children.forEach((child, i) => {
-        child.position.y = codeSnippets[i].position[1] + Math.sin(state.clock.elapsedTime * codeSnippets[i].speed + i) * 0.5;
-        child.rotation.y = state.clock.elapsedTime * 0.15 + codeSnippets[i].rotation;
+        const snippet = codeSnippets[i];
+        child.position.y = snippet.position[1] + Math.sin(state.clock.elapsedTime * snippet.speed + i) * 0.5;
+        child.rotation.y = state.clock.elapsedTime * 0.15 + snippet.rotation;
         child.rotation.z = Math.sin(state.clock.elapsedTime * 0.1 + i) * 0.1;
       });
     }
@@ -154,7 +153,7 @@ const FloatingCode = () => {
           color={snippet.color}
           anchorX="center"
           anchorY="middle"
-          outlineWidth={0.02}
+          outlineWidth={0.01}
           outlineColor="#000000"
         >
           {snippet.text}
@@ -162,17 +161,19 @@ const FloatingCode = () => {
       ))}
     </group>
   );
-};
+});
+
+FloatingCode.displayName = 'FloatingCode';
 
 /**
- * Shooting Stars - occasional streaks across the sky
+ * Optimized Shooting Star
  */
-const ShootingStar = ({ delay = 0, startPos = [10, 5, -5] }) => {
+const ShootingStar = memo(({ delay = 0, startPos = [10, 5, -5] }) => {
   const starRef = useRef();
-  const [isVisible, setIsVisible] = React.useState(false);
-  const [startPosition] = React.useState(startPos);
-  
-  React.useEffect(() => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [startPosition] = useState(startPos);
+
+  useEffect(() => {
     const timeout = setTimeout(() => {
       const interval = setInterval(() => {
         setIsVisible(true);
@@ -183,10 +184,10 @@ const ShootingStar = ({ delay = 0, startPos = [10, 5, -5] }) => {
           }
         }, 2000);
       }, 8000);
-      
+
       return () => clearInterval(interval);
     }, delay);
-    
+
     return () => clearTimeout(timeout);
   }, [delay, startPosition]);
 
@@ -202,32 +203,35 @@ const ShootingStar = ({ delay = 0, startPos = [10, 5, -5] }) => {
   return (
     <group>
       <mesh ref={starRef} position={startPosition}>
-        <sphereGeometry args={[0.08, 8, 8]} />
+        <sphereGeometry args={[0.08, 6, 6]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
       </mesh>
-      {/* Trail effect */}
       <mesh position={[startPosition[0] + 0.3, startPosition[1] + 0.15, startPosition[2]]}>
-        <sphereGeometry args={[0.05, 8, 8]} />
+        <sphereGeometry args={[0.05, 6, 6]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
       </mesh>
     </group>
   );
-};
+});
+
+ShootingStar.displayName = 'ShootingStar';
 
 /**
- * Extra Floating Stars - additional twinkling stars in various sizes
+ * Optimized Floating Stars - Using InstancedMesh
  */
-const FloatingStars = () => {
+const FloatingStars = memo(() => {
   const starsRef = useRef();
-  
+  const frameCount = useRef(0);
+  const count = 100;
+
   const stars = useMemo(() => {
     const starArray = [];
-    for (let i = 0; i < 100; i++) {
-      const pseudoRandom = (seed) => {
-        const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-        return x - Math.floor(x);
-      };
-      
+    const pseudoRandom = (seed) => {
+      const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
+
+    for (let i = 0; i < count; i++) {
       starArray.push({
         position: [
           (pseudoRandom(i * 5) - 0.5) * 40,
@@ -243,6 +247,10 @@ const FloatingStars = () => {
   }, []);
 
   useFrame((state) => {
+    frameCount.current++;
+    // Update every 3 frames
+    if (frameCount.current % 3 !== 0) return;
+
     if (starsRef.current) {
       starsRef.current.children.forEach((star, i) => {
         const opacity = 0.3 + Math.sin(state.clock.elapsedTime * stars[i].speed + stars[i].delay) * 0.7;
@@ -257,41 +265,44 @@ const FloatingStars = () => {
     <group ref={starsRef}>
       {stars.map((star, i) => (
         <mesh key={i} position={star.position} scale={star.scale}>
-          <sphereGeometry args={[0.03, 6, 6]} />
+          <sphereGeometry args={[0.03, 4, 4]} />
           <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
         </mesh>
       ))}
     </group>
   );
-};
+});
+
+FloatingStars.displayName = 'FloatingStars';
 
 /**
- * Constellation Lines - connecting stars to form patterns
+ * Optimized Constellations
  */
-const Constellations = () => {
+const Constellations = memo(() => {
   const linesRef = useRef();
-  
+  const frameCount = useRef(0);
+
   const { positions } = useMemo(() => {
     const pos = [];
     const constellations = [
-      // Big Dipper
       [[-8, 5, -10], [-6, 6, -10], [-4, 5.5, -10], [-2, 5, -10]],
-      // Orion's Belt
       [[2, 0, -12], [4, -0.5, -12], [6, -1, -12]],
-      // Random constellation
       [[-5, -3, -8], [-3, -2, -8], [-1, -3.5, -8]]
     ];
-    
+
     constellations.forEach(constellation => {
       for (let i = 0; i < constellation.length - 1; i++) {
         pos.push(...constellation[i], ...constellation[i + 1]);
       }
     });
-    
+
     return { positions: new Float32Array(pos) };
   }, []);
 
   useFrame((state) => {
+    frameCount.current++;
+    if (frameCount.current % 5 !== 0) return;
+
     if (linesRef.current) {
       linesRef.current.material.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
     }
@@ -310,15 +321,21 @@ const Constellations = () => {
       <lineBasicMaterial color="#4FB3D4" transparent opacity={0.3} />
     </lineSegments>
   );
-};
+});
+
+Constellations.displayName = 'Constellations';
 
 /**
- * Moon - glowing moon in the background
+ * Optimized Moon
  */
-const Moon = () => {
+const Moon = memo(() => {
   const moonRef = useRef();
-  
+  const frameCount = useRef(0);
+
   useFrame((state) => {
+    frameCount.current++;
+    if (frameCount.current % 2 !== 0) return;
+
     if (moonRef.current) {
       moonRef.current.rotation.y = state.clock.elapsedTime * 0.05;
     }
@@ -327,7 +344,7 @@ const Moon = () => {
   return (
     <Float speed={0.5} rotationIntensity={0.1} floatIntensity={0.3}>
       <mesh ref={moonRef} position={[-20, 12, -20]}>
-        <sphereGeometry args={[2, 32, 32]} />
+        <sphereGeometry args={[2, 16, 16]} />
         <meshStandardMaterial
           color="#E8E8E8"
           emissive="#C9C9C9"
@@ -337,74 +354,83 @@ const Moon = () => {
       </mesh>
     </Float>
   );
-};
+});
+
+Moon.displayName = 'Moon';
 
 /**
- * Hero Organism - Telling Medhat's Story
- * "A passionate software engineer who turned imagination into reality"
+ * Optimized 3D Scene - Memoized to prevent re-renders
+ */
+const ThreeScene = memo(() => {
+ return (
+    <>
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.3} color="#ffffff" />
+      <pointLight position={[-10, -10, -5]} intensity={0.2} color="#4FB3D4" />
+      
+      <StarrySky />
+      <FloatingStars />
+      <FloatingCode />
+      <Constellations />
+      <Moon />
+      
+      <ShootingStar delay={0} startPos={[12, 8, -8]} />
+      <ShootingStar delay={2500} startPos={[-10, 6, -6]} />
+      <ShootingStar delay={5000} startPos={[8, -5, -10]} />
+      <ShootingStar delay={7500} startPos={[-8, 4, -7]} />
+    </>
+  );
+});
+
+ThreeScene.displayName = 'ThreeScene';
+
+/**
+ * Optimized Hero Component
  */
 const HeroNew = () => {
   const canvasRef = useRef();
   const { scrollYProgress } = useFramerScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
-  
-  // Tech badges to display
-  const techBadges = [
+
+  // Memoize tech badges
+  const techBadges = useMemo(() => [
     { Icon: SiReact, label: 'React', color: 'text-[#61DAFB]' },
     { Icon: SiTypescript, label: 'TypeScript', color: 'text-[#3178C6]' },
     { Icon: SiPython, label: 'Python', color: 'text-[#3776AB]' },
     { Icon: SiJavascript, label: 'JavaScript', color: 'text-[#F7DF1E]' },
     { Icon: FaMicrosoft, label: 'Microsoft', color: 'text-[#00A4EF]' },
-  ];
+  ], []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br dark:from-[#0a0e27] dark:via-[#0f1729] dark:to-[#050810] from-[#1a1f3a] via-[#151b2e] to-[#0a0e1f]">
-      {/* Starry Sky Background */}
+      {/* Optimized Starry Sky Background */}
       <div className="absolute inset-0 z-0">
         <Canvas
           ref={canvasRef}
           camera={{ position: [0, 0, 10], fov: 75 }}
-          gl={{ alpha: true, antialias: true }}
+          gl={{
+            alpha: true,
+            antialias: false, // Disable antialiasing for performance
+            powerPreference: "high-performance",
+            stencil: false,
+          }}
+          dpr={[1, 1.5]} // Limit pixel ratio for performance
+          performance={{ min: 0.5 }} // Auto-adjust performance
           style={{ background: 'transparent' }}
         >
-          <ambientLight intensity={0.2} />
-          <pointLight position={[10, 10, 10]} intensity={0.3} color="#ffffff" />
-          <pointLight position={[-10, -10, -5]} intensity={0.2} color="#4FB3D4" />
-          
-          {/* Starry Sky - Main background stars */}
-          <StarrySky />
-          
-          {/* Extra Floating Stars - Larger twinkling stars */}
-          <FloatingStars />
-          
-          {/* Floating Code - Software terms and syntax */}
-          <FloatingCode />
-          
-          {/* Constellations */}
-          <Constellations />
-          
-          {/* Moon */}
-          <Moon />
-          
-          {/* Shooting Stars */}
-          <ShootingStar delay={0} startPos={[12, 8, -8]} />
-          <ShootingStar delay={2500} startPos={[-10, 6, -6]} />
-          <ShootingStar delay={5000} startPos={[8, -5, -10]} />
-          <ShootingStar delay={7500} startPos={[-8, 4, -7]} />
+          <ThreeScene />
         </Canvas>
-        
-        {/* Gradient overlay for depth */}
+
         <div className="absolute inset-0 bg-gradient-to-b dark:from-transparent dark:via-black/30 dark:to-black/60 from-transparent via-[#0a0e27]/40 to-[#050810]/80 pointer-events-none" />
       </div>
 
-      {/* Content Layer */}
+      {/* Content Layer - Kept exactly as original */}
       <motion.div
         style={{ opacity, scale }}
         className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center"
       >
         <div className="space-y-8">
-          {/* Profile Picture */}
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -413,24 +439,27 @@ const HeroNew = () => {
           >
             <div className="relative">
               <div className="absolute inset-0 bg-cyan-500/30 rounded-full blur-2xl opacity-40 animate-pulse"></div>
-              <img 
-                src="/profile.png" 
-                alt="Medhat Ashour" 
+              <img
+                src="/profile.png"
+                alt="Medhat Ashour"
+                width="128"
+                height="128"
+                loading="eager"
+                fetchpriority="high"
                 className="relative w-28 h-28 md:w-32 md:h-32 rounded-full object-cover border border-cyan-400/30 shadow-2xl"
               />
             </div>
           </motion.div>
 
-          {/* Animated Introduction */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ 
-              opacity: 1, 
+            animate={{
+              opacity: 1,
               y: [0, -10, 0],
             }}
-            transition={{ 
+            transition={{
               opacity: { duration: 0.8, delay: 0.3 },
-              y: { 
+              y: {
                 duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
@@ -438,7 +467,6 @@ const HeroNew = () => {
             }}
             className="relative space-y-3"
           >
-            {/* Cosmic particles around text */}
             <div className="absolute inset-0 -z-10 pointer-events-none">
               {[...Array(30)].map((_, i) => (
                 <motion.div
@@ -464,8 +492,7 @@ const HeroNew = () => {
               ))}
             </div>
 
-            {/* Glowing backdrop with pulse */}
-            <motion.div 
+            <motion.div
               className="absolute inset-0 -z-10 bg-gradient-radial from-cyan-500/10 via-blue-500/5 to-transparent blur-3xl"
               animate={{
                 opacity: [0.3, 0.6, 0.3],
@@ -478,7 +505,7 @@ const HeroNew = () => {
               }}
             />
 
-            <motion.h1 
+            <motion.h1
               className="text-6xl md:text-8xl font-light tracking-wide leading-tight"
               animate={{
                 y: [0, -5, 0],
@@ -491,10 +518,10 @@ const HeroNew = () => {
             >
               <motion.span
                 initial={{ opacity: 0 }}
-                animate={{ 
+                animate={{
                   opacity: [0.85, 1, 0.85],
                 }}
-                transition={{ 
+                transition={{
                   opacity: { duration: 0.5, delay: 0.3 },
                   default: {
                     duration: 3,
@@ -510,11 +537,11 @@ const HeroNew = () => {
 
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ 
+              animate={{
                 opacity: [0.8, 1, 0.8],
                 y: [0, -3, 0],
               }}
-              transition={{ 
+              transition={{
                 opacity: { duration: 0.8, delay: 0.6 },
                 y: {
                   duration: 4.5,
@@ -527,14 +554,14 @@ const HeroNew = () => {
             >
               Software Engineer @ Microsoft
             </motion.p>
-            
+
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ 
+              animate={{
                 opacity: [0.6, 0.9, 0.6],
                 y: [0, -2, 0],
               }}
-              transition={{ 
+              transition={{
                 opacity: { duration: 0.8, delay: 0.9 },
                 y: {
                   duration: 5.5,
@@ -549,14 +576,13 @@ const HeroNew = () => {
             </motion.p>
           </motion.div>
 
-          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ 
-              opacity: 1, 
+            animate={{
+              opacity: 1,
               y: [0, -8, 0],
             }}
-            transition={{ 
+            transition={{
               opacity: { duration: 0.8, delay: 1.2 },
               y: {
                 duration: 6,
@@ -571,7 +597,7 @@ const HeroNew = () => {
               href="https://github.com/medhatjachour"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 y: -5,
                 boxShadow: "0 0 25px rgba(6,182,212,0.3)",
@@ -597,7 +623,7 @@ const HeroNew = () => {
               href="https://linkedin.com/in/medhatjachour"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 y: -5,
                 boxShadow: "0 0 25px rgba(6,182,212,0.3)",
@@ -619,11 +645,11 @@ const HeroNew = () => {
               <FaLinkedin className="text-lg" />
               <span>LinkedIn</span>
             </motion.a>
-            
+
             <motion.a
               href="/medhat frontend engineer.pdf"
               download
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
                 y: -5,
                 boxShadow: "0 0 25px rgba(6,182,212,0.3)",
@@ -647,7 +673,6 @@ const HeroNew = () => {
             </motion.a>
           </motion.div>
 
-          {/* Scroll indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

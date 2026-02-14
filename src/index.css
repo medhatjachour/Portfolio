@@ -58,10 +58,41 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
   padding: 0;
+  /* Enable font smoothing */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Optimize text rendering */
+  text-rendering: optimizeLegibility;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Performance optimizations - CSS Containment */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Content visibility for lazy rendering */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
 }
 
 /* Custom utilities */
@@ -111,13 +142,13 @@ html {
                0 0 30px rgba(99, 102, 241, 0.4);
 }
 
-/* Floating animation */
+/* Floating animation - GPU accelerated */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
 }
 
@@ -132,10 +163,14 @@ html {
 
 .animate-spin-slow {
   animation: spin-slow 10s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Gradient text */
@@ -146,12 +181,31 @@ html {
   background-clip: text;
 }
 
-/* Card hover effects */
+/* Card hover effects - GPU accelerated */
 .card-3d {
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .card-3d:hover {
-  transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+  transform: translate3d(0, -10px, 0) rotateX(5deg) rotateY(5deg);
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-float,
+  .animate-spin-slow {
+    animation: none !important;
+  }
 }

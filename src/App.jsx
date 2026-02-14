@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useThemeStore } from './store/themeStore';
-import Home from './pages/Home';
 import LoadingScreen from './components/molecules/LoadingScreen';
 import ScrollProgress from './components/molecules/ScrollProgress';
-import MusicPlayer from './components/molecules/MusicPlayer';
-import EasterEgg from './components/molecules/EasterEgg';
 import ThemeSwitcher from './components/molecules/ThemeSwitcher';
+
+// Lazy load heavy components for better performance
+// Split bundle and load on-demand
+const Home = lazy(() => import('./pages/Home'));
+const MusicPlayer = lazy(() => import('./components/molecules/MusicPlayer'));
+const EasterEgg = lazy(() => import('./components/molecules/EasterEgg'));
 
 /**
  * Main App Component
@@ -40,12 +43,22 @@ function App() {
       <LoadingScreen />
       <ScrollProgress />
       <ThemeSwitcher />
-      <MusicPlayer />
-      <EasterEgg />
+      {/* Lazy load non-critical components */}
+      <Suspense fallback={null}>
+        <MusicPlayer />
+        <EasterEgg />
+      </Suspense>
       <div className="App">
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
+        {/* Main content with loading fallback */}
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-blue-900">
+            <div className="text-white text-2xl animate-pulse">Loading...</div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </Suspense>
       </div>
     </Router>
   );
