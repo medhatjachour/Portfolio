@@ -82,8 +82,8 @@ const GitHubStats = ({ username = 'medhatjachour' }) => {
           <div className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
             <item.icon className="text-2xl text-white" />
           </div>
-          <p className="text-gray-400 text-sm mb-1">{item.label}</p>
-          <p className="text-3xl font-bold text-white">
+          <p className="text-[var(--color-text-muted)] text-sm mb-1">{item.label}</p>
+          <p className="text-3xl font-bold text-[var(--color-text)]">
             {item.value.toLocaleString()}
           </p>
         </motion.div>

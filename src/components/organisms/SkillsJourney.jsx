@@ -331,7 +331,7 @@ const SkillsJourney = () => {
                             {skill.icon}
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-bold text-white">{skill.name}</h4>
+                            <h4 className=" font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">{skill.name}</h4>
                             <div className="text-xs text-emerald-400 font-semibold">{skill.level}%</div>
                           </div>
                         </div>

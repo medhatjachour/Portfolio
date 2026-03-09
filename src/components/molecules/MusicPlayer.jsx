@@ -86,16 +86,16 @@ const MusicPlayer = () => {
         <button
           onClick={togglePlay}
           type="button"
-          className={`relative z-10 w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md border-2 transition-all duration-300 cursor-pointer ${
+          className={` relative z-10 w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md border-2 transition-all duration-300 cursor-pointer ${
             isPlaying
               ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 border-emerald-400 shadow-lg shadow-emerald-500/50'
               : 'bg-white/10 border-white/20 hover:border-cyan-400/50'
           }`}
         >
           {isPlaying ? (
-            <FaPause className="text-white text-lg" />
+            <FaPause className="text-(--color-text) text-lg" />
           ) : (
-            <FaPlay className="text-white text-lg ml-0.5" />
+            <FaPlay className="text-(--color-text) text-lg ml-0.5" />
           )}
         </button>
 

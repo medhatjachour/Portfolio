@@ -99,11 +99,11 @@ const ThemeSwitcher = () => {
             >
               <div className="flex items-center gap-2">
                 <FaPalette className="text-purple-400" />
-                <span className="text-white text-sm font-semibold">
+                <span className="text-[var(--color-text)] text-sm font-semibold">
                   {isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 </span>
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-[var(--color-text-muted)] mt-1">
                 {isDark ? '☀️ Early Journey' : '🌙 Mastery Path'}
               </p>
             </motion.div>

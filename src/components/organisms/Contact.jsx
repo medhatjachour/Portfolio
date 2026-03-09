@@ -182,7 +182,6 @@ const Contact = ({
     <section 
       id="contact"
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%)' }}
     >
       {/* 3D Background */}
       <div className="absolute inset-0 z-0" style={{ opacity: 0.4 }}>
@@ -216,10 +215,10 @@ const Contact = ({
           >
             💬 Let's Connect
           </motion.span>
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[var(--color-text)] mb-6">
             Get In <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">Touch</span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
             Have a project in mind or want to collaborate? Let's create something amazing together!
           </p>
         </motion.div>
@@ -237,7 +236,7 @@ const Contact = ({
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
                 <FaPaperPlane className="text-2xl text-white" />
               </div>
-              <h3 className="text-3xl font-bold text-white">
+              <h3 className="text-3xl font-bold text-[var(--color-text)]">
                 Send a Message
               </h3>
             </div>
@@ -347,8 +346,8 @@ const Contact = ({
                     <FaEnvelope size={24} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Email</p>
-                    <p className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                    <p className="text-sm text-[var(--color-text-muted)] mb-1">Email</p>
+                    <p className="text-lg font-bold text-[var(--color-text)] group-hover:text-blue-400 transition-colors">
                       {contactInfo.email}
                     </p>
                   </div>
@@ -366,8 +365,8 @@ const Contact = ({
                     <FaPhone size={24} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Phone</p>
-                    <p className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">
+                    <p className="text-sm text-[var(--color-text-muted)] mb-1">Phone</p>
+                    <p className="text-lg font-bold text-[var(--color-text)] group-hover:text-emerald-400 transition-colors">
                       {contactInfo.phone}
                     </p>
                   </div>
@@ -384,8 +383,8 @@ const Contact = ({
                     <FaMapMarkerAlt size={24} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400 mb-1">Location</p>
-                    <p className="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">
+                    <p className="text-sm text-[var(--color-text-muted)] mb-1">Location</p>
+                    <p className="text-lg font-bold text-[var(--color-text)] group-hover:text-purple-400 transition-colors">
                       {contactInfo.location}
                     </p>
                   </div>
@@ -395,7 +394,7 @@ const Contact = ({
             
             {/* Social Links */}
             <div className="backdrop-blur-md bg-white/5 border border-white/10 p-8 rounded-2xl">
-              <h4 className="text-2xl font-bold text-white mb-6">
+              <h4 className="text-2xl font-bold text-[var(--color-text)] mb-6">
                 Connect With <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Me</span>
               </h4>
               <div className="flex gap-4">

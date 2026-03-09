@@ -9,7 +9,7 @@ import { FaSun, FaMoon } from 'react-icons/fa';
  * Footer with copyright, theme toggle, and back-to-top button
  * @param {string} name - Your name for copyright
  */
-const Footer = ({ name = 'Your Name' }) => {
+const Footer = ({ name = 'MedhatJAchour' }) => {
   const { isDark, toggleTheme } = useThemeStore();
   
   const scrollToTop = () => {
@@ -27,9 +27,9 @@ const Footer = ({ name = 'Your Name' }) => {
             viewport={{ once: true }}
             className="text-[var(--color-text-muted)] text-sm flex items-center gap-2"
           >
-            © {new Date().getFullYear()} {name}. Made with 
+            © {new Date().getFullYear()} <a href="https://www.linkedin.com/in/medhatjachour" target="_blank" rel="noopener noreferrer">{name}</a>. Made with 
             <FaHeart className="text-red-500 animate-pulse" /> 
-            using React & Tailwind CSS
+            
           </motion.p>
           
           {/* Controls */}

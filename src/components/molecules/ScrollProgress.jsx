@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useScroll, useSpring } from 'framer-motion';
 
 /**
@@ -72,7 +73,7 @@ const ScrollProgress = () => {
           
           {/* Percentage text */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs font-bold text-white">{percentage}%</span>
+            <span className="text-xs font-bold text-[var(--color-text)] ">{percentage}%</span>
           </div>
           
           {/* Glow effect */}

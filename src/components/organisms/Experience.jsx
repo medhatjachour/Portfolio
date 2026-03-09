@@ -146,7 +146,6 @@ const Experience = ({
     <section 
       id="experience"
       className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
     >
       {/* 3D Background */}
       <div className="absolute inset-0 z-0" style={{ opacity: 0.3 }}>
@@ -167,10 +166,10 @@ const Experience = ({
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-4">
+          <h2 className="text-5xl md:text-6xl font-bold text-[var(--color-text)] mb-4">
             Work <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">Experience</span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-[var(--color-text-muted)] max-w-2xl mx-auto">
             Building the future, one line of code at a time
           </p>
         </motion.div>
@@ -193,8 +192,8 @@ const Experience = ({
                     {/* Icon & Date */}
                     <div className="flex-shrink-0">
                       <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${exp.color} p-0.5 mb-4`}>
-                        <div className="w-full h-full bg-slate-900 rounded-xl flex items-center justify-center">
-                          <Icon className="text-3xl text-white" />
+                        <div className="w-full h-full bg-[var(--color-bg)] rounded-xl flex items-center justify-center">
+                          <Icon className="text-3xl text-[var(--color-text)]" />
                         </div>
                       </div>
                       <div className="text-emerald-400 font-semibold text-sm">
@@ -204,14 +203,14 @@ const Experience = ({
 
                     {/* Content */}
                     <div className="flex-grow">
-                      <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                      <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-text)] mb-2">
                         {exp.title}
                       </h3>
                       <div className="flex flex-wrap gap-3 mb-4">
                         <span className={`px-4 py-1 rounded-full bg-gradient-to-r ${exp.color} text-white font-semibold text-sm`}>
                           {exp.company}
                         </span>
-                        <span className="px-4 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 text-sm">
+                        <span className="px-4 py-1 rounded-full bg-white/5 border border-white/10 text-[var(--color-text-muted)] text-sm">
                           {exp.location}
                         </span>
                       </div>
@@ -224,7 +223,7 @@ const Experience = ({
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: idx * 0.1 }}
-                            className="flex items-start gap-3 text-gray-300"
+                            className="flex items-start gap-3 text-[var(--color-text-muted)]"
                           >
                             <span className="text-emerald-400 mt-1">▸</span>
                             <span>{achievement}</span>

@@ -15,7 +15,7 @@ const ProjectFilter = ({ activeFilter, onFilterChange, technologies }) => {
         className={`px-6 py-3 rounded-xl font-semibold transition-all ${
           activeFilter === 'all'
             ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-purple-500/30'
-            : 'backdrop-blur-md bg-white/5 border border-white/10 text-gray-300 hover:border-white/20'
+            : 'backdrop-blur-md bg-white/5 border border-white/10 text-[var(--color-text)] hover:border-white/20'
         }`}
       >
         All Projects
@@ -30,7 +30,7 @@ const ProjectFilter = ({ activeFilter, onFilterChange, technologies }) => {
           className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
             activeFilter === tech.name
               ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-purple-500/30'
-              : 'backdrop-blur-md bg-white/5 border border-white/10 text-gray-300 hover:border-white/20'
+              : 'backdrop-blur-md bg-white/5 border border-white/10 text-[var(--color-text)] hover:border-white/20'
           }`}
         >
           <tech.icon className="text-lg" />

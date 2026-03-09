@@ -339,7 +339,7 @@ const ProjectsShowcase = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
+                <h3 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
                   {project.title}
                 </h3>
 

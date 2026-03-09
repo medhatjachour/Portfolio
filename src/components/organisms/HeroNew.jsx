@@ -502,7 +502,7 @@ const HeroNew = () => {
                     ease: "easeInOut",
                   }
                 }}
-                className="block text-white/90 drop-shadow-[0_0_50px_rgba(6,182,212,0.5)]"
+                className="block text-[var(--color-text)] drop-shadow-[0_0_50px_rgba(6,182,212,0.5)]"
               >
                 Medhat Ashour
               </motion.span>
@@ -543,7 +543,7 @@ const HeroNew = () => {
                   delay: 1,
                 }
               }}
-              className="text-sm md:text-base text-gray-400/70 italic font-light max-w-2xl mx-auto pt-3"
+              className="text-sm md:text-base text-[var(--color-text-muted)] italic font-light max-w-2xl mx-auto pt-3"
             >
               💭 everything in my imagination is possible
             </motion.p>
@@ -587,7 +587,7 @@ const HeroNew = () => {
                   ease: "easeInOut",
                 }
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/5 border border-white/20 text-white rounded-lg font-light hover:border-cyan-400/50 hover:bg-white/10 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/5 border border-white/20 text-[var(--color-text)] rounded-lg font-light hover:border-cyan-400/50 hover:bg-white/10 transition-all"
             >
               <FaGithub className="text-lg" />
               <span>GitHub</span>
@@ -614,7 +614,7 @@ const HeroNew = () => {
                   delay: 0.5,
                 }
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/5 border border-white/20 text-white rounded-lg font-light hover:border-cyan-400/50 hover:bg-white/10 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/5 border border-white/20 text-[var(--color-text)] rounded-lg font-light hover:border-cyan-400/50 hover:bg-white/10 transition-all"
             >
               <FaLinkedin className="text-lg" />
               <span>LinkedIn</span>
@@ -640,7 +640,7 @@ const HeroNew = () => {
                   delay: 1,
                 }
               }}
-              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/10 border border-cyan-400/30 text-white rounded-lg font-light hover:border-cyan-400 hover:bg-white/15 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 backdrop-blur-md bg-white/10 border border-cyan-400/30 text-[var(--color-text)] rounded-lg font-light hover:border-cyan-400 hover:bg-white/15 transition-all"
             >
               <FaDownload className="text-lg" />
               <span>Resume</span>
@@ -657,7 +657,7 @@ const HeroNew = () => {
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="flex flex-col items-center gap-2 text-gray-400"
+              className="flex flex-col items-center gap-2 text-[var(--color-text-muted)]"
             >
               <span className="text-sm font-medium">Discover My Journey</span>
               <div className="w-6 h-10 rounded-full border-2 border-emerald-400/50 flex items-start justify-center p-2">
