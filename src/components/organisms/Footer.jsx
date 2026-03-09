@@ -27,7 +27,7 @@ const Footer = ({ name = 'MedhatJAchour' }) => {
             viewport={{ once: true }}
             className="text-[var(--color-text-muted)] text-sm flex items-center gap-2"
           >
-            © {new Date().getFullYear()} <a href="https://www.linkedin.com/in/medhatjachour" target="_blank" rel="noopener noreferrer">{name}</a>. Made with 
+            ©  {new Date().getFullYear()} By <a href="https://www.linkedin.com/in/medhatjachour" target="_blank" rel="noopener noreferrer">{name}</a>. Made with 
             <FaHeart className="text-red-500 animate-pulse" /> 
             
           </motion.p>
