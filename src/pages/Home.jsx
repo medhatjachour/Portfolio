@@ -5,6 +5,7 @@ import Experience from '../components/organisms/Experience';
 import SkillsJourney from '../components/organisms/SkillsJourney';
 import Contact from '../components/organisms/Contact';
 import Footer from '../components/organisms/Footer';
+import AIAgent from '../components/molecules/AIAgent';
 
 /**
  * Home Page
@@ -27,6 +28,7 @@ const Home = () => {
       <ProjectsShowcase />
       <Contact />
       <Footer />
+      <AIAgent />
     </div>
   );
 };
