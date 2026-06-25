@@ -1,5 +1,6 @@
 import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
 import { motion } from 'framer-motion';
 import { MeshDistortMaterial, Float } from '@react-three/drei';
 import { FaMicrosoft, FaBriefcase, FaLaptopCode, FaMedkit } from 'react-icons/fa';
@@ -149,12 +150,12 @@ const Experience = ({
     >
       {/* 3D Background */}
       <div className="absolute inset-0 z-0" style={{ opacity: 0.3 }}>
-        <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
+        <AdaptiveCanvas camera={{ position: [0, 0, 8], fov: 75 }}>
           <ambientLight intensity={0.3} />
           <ExperienceParticles />
           <ExperienceOrb position={[-3, 2, 0]} color="#6366F1" />
           <ExperienceOrb position={[3, -1, 1]} color="#8B5CF6" />
-        </Canvas>
+        </AdaptiveCanvas>
       </div>
 
       <div className="relative z-10 container mx-auto max-w-6xl">

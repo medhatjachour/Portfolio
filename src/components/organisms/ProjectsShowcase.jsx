@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
 import { Float, MeshDistortMaterial } from '@react-three/drei';
 // eslint-disable-next-line no-unused-vars
 import { motion, useInView } from 'framer-motion';
@@ -11,6 +12,7 @@ import {
 } from 'react-icons/si';
 import ProjectFilter from '../molecules/ProjectFilter';
 import GitHubStats from '../molecules/GitHubStats';
+import TiltCard from '../atoms/TiltCard';
 
 /**
  * Floating Stars and Circles - representing different project types
@@ -267,7 +269,7 @@ const ProjectsShowcase = () => {
     >
       {/* Flowing 3D background - seamlessly integrated */}
       <div className="absolute inset-0 w-full h-full opacity-30">
-        <Canvas
+        <AdaptiveCanvas
           camera={{ position: [0, 0, 8], fov: 60 }}
           style={{ background: 'transparent' }}
         >
@@ -277,7 +279,7 @@ const ProjectsShowcase = () => {
           
           <FloatingStarsAndCircles />
           <ProjectOrbs />
-        </Canvas>
+        </AdaptiveCanvas>
       </div>
 
       {/* Gradient overlays */}
@@ -330,6 +332,7 @@ const ProjectsShowcase = () => {
               className="group relative"
             >
               {/* Card */}
+              <TiltCard className="h-full">
               <div className="relative backdrop-blur-md bg-gradient-to-br from-white/5 to-white/10 rounded-3xl p-6 border border-white/10 hover:border-white/30 transition-all h-full flex flex-col">
                 {/* Category badge */}
                 <div className="mb-4">
@@ -388,6 +391,7 @@ const ProjectsShowcase = () => {
                   </motion.a>
                 )}
               </div>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

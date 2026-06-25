@@ -21,6 +21,7 @@ const Textarea = ({
   className = '',
   required = false,
   error,
+  valid = false,
   ...props 
 }) => {
   return (
@@ -43,6 +44,7 @@ const Textarea = ({
           transition-all duration-300
           resize-none
           ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
+          ${valid && !error ? 'border-emerald-500 focus:border-emerald-500 focus:ring-emerald-500/20' : ''}
           ${className}
         `}
         {...props}

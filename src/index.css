@@ -10,11 +10,11 @@
   --color-success: #10B981;        /* Emerald */
   --color-warning: #F59E0B;        /* Amber */
   --color-info: #06B6D4;           /* Cyan */
-  --color-bg: #F9FAFB;
+  --color-bg: #EEF2FB;
   --color-surface: #FFFFFF;
-  --color-text: #111827;
-  --color-text-muted: #6B7280;
-  --color-border: #E5E7EB;
+  --color-text: #0F172A;
+  --color-text-muted: #475569;
+  --color-border: #D5DEEC;
   
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -52,16 +52,49 @@
 }
 
 body {
-  background-color: var(--color-bg);
+  background: linear-gradient(180deg, #F3F6FC 0%, #E7EDF9 100%);
   color: var(--color-text);
-  transition: colors 300ms;
+  transition: background-color 300ms, color 300ms;
   font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
   padding: 0;
 }
 
+.dark body {
+  background: var(--color-bg);
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+/* Premium custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #22D3EE transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #34D399, #22D3EE, #6366F1);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #22D3EE, #818CF8);
+  background-clip: padding-box;
+}
+
+/* Refined text selection */
+::selection {
+  background: rgba(34, 211, 238, 0.28);
+  color: inherit;
 }
 
 /* Custom utilities */
