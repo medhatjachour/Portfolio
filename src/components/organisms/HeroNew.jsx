@@ -1,5 +1,7 @@
 import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
+import Magnetic from '../atoms/Magnetic';
 import { Text,  Float } from '@react-three/drei';
 // eslint-disable-next-line no-unused-vars
 import { motion, useScroll as useFramerScroll, useTransform } from 'framer-motion';
@@ -55,6 +57,81 @@ const createStarTexture = () => {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 128, 128);
   
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+};
+
+/**
+ * Soft radial glow sprite texture — used for blooms, debris and halos.
+ */
+const createGlowTexture = () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.2, 'rgba(255,255,255,0.85)');
+  g.addColorStop(0.45, 'rgba(255,255,255,0.35)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+};
+
+/**
+ * Anamorphic lens-flare / starburst sprite texture for the supernova peak.
+ */
+const createFlareTexture = () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+  ctx.translate(128, 128);
+  const core = ctx.createRadialGradient(0, 0, 0, 0, 0, 46);
+  core.addColorStop(0, 'rgba(255,255,255,1)');
+  core.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = core;
+  ctx.beginPath();
+  ctx.arc(0, 0, 46, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalCompositeOperation = 'lighter';
+  const spikes = [
+    [0, 124], [Math.PI / 2, 124], [Math.PI / 4, 70], [-Math.PI / 4, 70],
+  ];
+  spikes.forEach(([ang, len]) => {
+    ctx.save();
+    ctx.rotate(ang);
+    const grad = ctx.createLinearGradient(-len, 0, len, 0);
+    grad.addColorStop(0, 'rgba(255,255,255,0)');
+    grad.addColorStop(0.5, 'rgba(255,255,255,0.95)');
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(-len, -1.5, len * 2, 3);
+    ctx.restore();
+  });
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+};
+
+/**
+ * Bright annulus sprite texture — the black hole's glowing photon ring.
+ */
+const createRingTexture = () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, 'rgba(255,255,255,0)');
+  g.addColorStop(0.6, 'rgba(255,255,255,0)');
+  g.addColorStop(0.76, 'rgba(255,236,200,0.9)');
+  g.addColorStop(0.85, 'rgba(255,255,255,1)');
+  g.addColorStop(0.93, 'rgba(255,205,140,0.5)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
   return texture;
@@ -392,6 +469,267 @@ const Constellations = () => {
 };
 
 /**
+ * Supernova - a cinematic stellar explosion: a blinding bloom, a lens-flare
+ * starburst at the peak, a white shockwave shell, two expanding colored gas
+ * shells (cool + ember) and a burst of multi-colored glowing debris, fading to
+ * darkness before the next cycle. All layers are additive sprites/points so the
+ * whole thing reads as light rather than geometry.
+ */
+const Supernova = ({
+  position = [0, 0, -14],
+  color = '#67e8f9',
+  emberColor = '#fb923c',
+  delay = 0,
+  period = 16,
+}) => {
+  const glowRef = useRef();
+  const flareRef = useRef();
+  const shockRef = useRef();
+  const shellRef = useRef();
+  const emberRef = useRef();
+  const debrisRef = useRef();
+  const debrisCount = 110;
+
+  const glowTex = useMemo(createGlowTexture, []);
+  const flareTex = useMemo(createFlareTexture, []);
+
+  const { directions, positions, debrisColors } = useMemo(() => {
+    const dirs = new Float32Array(debrisCount * 3);
+    const cols = new Float32Array(debrisCount * 3);
+    const hot = new THREE.Color('#ffffff');
+    const warm = new THREE.Color(emberColor);
+    const cool = new THREE.Color(color);
+    for (let i = 0; i < debrisCount; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const speed = 0.55 + Math.random() * 0.85;
+      dirs[i * 3] = Math.sin(phi) * Math.cos(theta) * speed;
+      dirs[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
+      dirs[i * 3 + 2] = Math.cos(phi) * speed;
+      const mix = Math.random();
+      const c = mix < 0.4 ? hot : mix < 0.7 ? warm : cool;
+      cols[i * 3] = c.r;
+      cols[i * 3 + 1] = c.g;
+      cols[i * 3 + 2] = c.b;
+    }
+    return { directions: dirs, positions: new Float32Array(debrisCount * 3), debrisColors: cols };
+  }, [color, emberColor]);
+
+  useFrame(({ clock }) => {
+    const cycle = ((clock.elapsedTime + delay) % period) / period;
+    const blast = 0.28;
+    const active = cycle < blast;
+    const e = active ? cycle / blast : 0;
+    const expand = 1 - Math.pow(1 - e, 3);          // easeOutCubic
+    const flash = active ? Math.max(0, 1 - e * 2.2) : 0;
+    const after = active ? Math.pow(1 - e, 1.8) : 0;
+
+    if (glowRef.current) {
+      glowRef.current.scale.setScalar(0.4 + expand * 5);
+      glowRef.current.material.opacity = flash * 0.9 + after * 0.12;
+    }
+    if (flareRef.current) {
+      flareRef.current.scale.setScalar(4 + e * 12);
+      flareRef.current.material.opacity = active ? Math.max(0, 1 - e * 3) : 0;
+      flareRef.current.material.rotation = e * 0.6;
+    }
+    if (shockRef.current) {
+      shockRef.current.scale.setScalar(0.2 + expand * 6.5);
+      shockRef.current.material.opacity = active ? Math.pow(1 - e, 1.3) * 0.7 : 0;
+    }
+    if (shellRef.current) {
+      shellRef.current.scale.setScalar(0.3 + expand * 4.6);
+      shellRef.current.material.opacity = active ? (1 - e) * 0.4 : 0;
+    }
+    if (emberRef.current) {
+      emberRef.current.scale.setScalar(0.25 + expand * 3.4);
+      emberRef.current.material.opacity = active ? (1 - e) * 0.5 : 0;
+    }
+    if (debrisRef.current) {
+      const arr = debrisRef.current.geometry.attributes.position.array;
+      const dist = expand * 6;
+      for (let i = 0; i < debrisCount; i++) {
+        arr[i * 3] = directions[i * 3] * dist;
+        arr[i * 3 + 1] = directions[i * 3 + 1] * dist;
+        arr[i * 3 + 2] = directions[i * 3 + 2] * dist;
+      }
+      debrisRef.current.geometry.attributes.position.needsUpdate = true;
+      debrisRef.current.material.opacity = active ? Math.pow(1 - e, 1.2) * 0.95 : 0;
+    }
+  });
+
+  return (
+    <group position={position}>
+      {/* Bloom */}
+      <sprite ref={glowRef}>
+        <spriteMaterial map={glowTex} color={color} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </sprite>
+      {/* Lens-flare starburst */}
+      <sprite ref={flareRef}>
+        <spriteMaterial map={flareTex} color="#ffffff" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </sprite>
+      {/* White shockwave shell */}
+      <mesh ref={shockRef}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* Cool gas shell */}
+      <mesh ref={shellRef}>
+        <sphereGeometry args={[1, 28, 28]} />
+        <meshBasicMaterial color={color} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* Warm ember shell */}
+      <mesh ref={emberRef}>
+        <sphereGeometry args={[1, 28, 28]} />
+        <meshBasicMaterial color={emberColor} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      {/* Glowing debris */}
+      <points ref={debrisRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={debrisCount} array={positions} itemSize={3} />
+          <bufferAttribute attach="attributes-color" count={debrisCount} array={debrisColors} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial map={glowTex} size={0.26} vertexColors transparent opacity={0} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      </points>
+    </group>
+  );
+};
+
+/**
+ * BlackHole - a drifting black hole: a pure-black event horizon that occludes
+ * the stars behind it (so it literally swallows them as it moves), wrapped by a
+ * glowing photon ring, a tilted accretion disk of orbiting embers and a stream
+ * of stars spiralling inward to their doom, plus a soft gravitational halo.
+ */
+const BlackHole = ({ startPosition = [9, 9, -19] }) => {
+  const groupRef = useRef();
+  const diskRef = useRef();
+  const inflowRef = useRef();
+  const ringRef = useRef();
+  const haloRef = useRef();
+
+  const glowTex = useMemo(createGlowTexture, []);
+  const ringTex = useMemo(createRingTexture, []);
+
+  const horizon = 1.5;
+  const diskCount = 420;
+  const inflowCount = 220;
+
+  const disk = useMemo(() => {
+    const positions = new Float32Array(diskCount * 3);
+    const colors = new Float32Array(diskCount * 3);
+    const data = [];
+    const inner = new THREE.Color('#fff1d0');
+    const mid = new THREE.Color('#ffae5c');
+    const outer = new THREE.Color('#ff5e3a');
+    for (let i = 0; i < diskCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const t = Math.pow(Math.random(), 0.6);
+      const radius = horizon * 1.25 + t * 3.6;
+      const speed = 0.9 / Math.sqrt(radius);
+      const thickness = (Math.random() - 0.5) * 0.1 * radius;
+      data.push({ angle, radius, speed, thickness });
+      const c = t < 0.4 ? inner.clone().lerp(mid, t / 0.4) : mid.clone().lerp(outer, (t - 0.4) / 0.6);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+    return { positions, colors, data };
+  }, []);
+
+  const inflow = useMemo(() => {
+    const positions = new Float32Array(inflowCount * 3);
+    const data = [];
+    for (let i = 0; i < inflowCount; i++) {
+      data.push({
+        angle: Math.random() * Math.PI * 2,
+        radius: horizon * 1.3 + Math.random() * 4.5,
+        height: (Math.random() - 0.5) * 1.6,
+      });
+    }
+    return { positions, data };
+  }, []);
+
+  useFrame(({ clock }, delta) => {
+    const t = clock.elapsedTime;
+    const d = Math.min(delta, 0.05);
+
+    if (groupRef.current) {
+      groupRef.current.position.x = ((startPosition[0] - t * 0.34 + 26) % 52) - 26;
+      groupRef.current.position.y = startPosition[1] + Math.sin(t * 0.18) * 1.6;
+    }
+    if (diskRef.current) {
+      const arr = diskRef.current.geometry.attributes.position.array;
+      for (let i = 0; i < diskCount; i++) {
+        const p = disk.data[i];
+        p.angle += p.speed * d;
+        arr[i * 3] = Math.cos(p.angle) * p.radius;
+        arr[i * 3 + 1] = p.thickness;
+        arr[i * 3 + 2] = Math.sin(p.angle) * p.radius;
+      }
+      diskRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+    if (inflowRef.current) {
+      const arr = inflowRef.current.geometry.attributes.position.array;
+      for (let i = 0; i < inflowCount; i++) {
+        const p = inflow.data[i];
+        p.radius -= (0.55 + 0.8 / p.radius) * d;
+        p.angle += (1.1 / Math.max(p.radius, 0.3)) * d;
+        p.height *= 0.992;
+        if (p.radius < horizon * 0.7) {
+          p.radius = horizon * 1.3 + Math.random() * 4.5;
+          p.angle = Math.random() * Math.PI * 2;
+          p.height = (Math.random() - 0.5) * 1.6;
+        }
+        arr[i * 3] = Math.cos(p.angle) * p.radius;
+        arr[i * 3 + 1] = p.height;
+        arr[i * 3 + 2] = Math.sin(p.angle) * p.radius;
+      }
+      inflowRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+    if (ringRef.current) {
+      ringRef.current.material.opacity = 0.85 + Math.sin(t * 2) * 0.12;
+    }
+    if (haloRef.current) {
+      haloRef.current.material.opacity = 0.5 + Math.sin(t * 1.3) * 0.08;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={startPosition} rotation={[1.15, 0, 0.35]}>
+      {/* Gravitational halo */}
+      <sprite ref={haloRef} scale={[9, 9, 1]}>
+        <spriteMaterial map={glowTex} color="#ffb066" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </sprite>
+      {/* Event horizon — occludes stars behind it */}
+      <mesh>
+        <sphereGeometry args={[horizon, 48, 48]} />
+        <meshBasicMaterial color="#000000" />
+      </mesh>
+      {/* Photon ring (camera-facing, encircles the horizon) */}
+      <sprite ref={ringRef} scale={[3.8, 3.8, 1]} renderOrder={3}>
+        <spriteMaterial map={ringTex} color="#ffe6b3" transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} depthTest={false} />
+      </sprite>
+      {/* Accretion disk */}
+      <points ref={diskRef} renderOrder={1}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={diskCount} array={disk.positions} itemSize={3} />
+          <bufferAttribute attach="attributes-color" count={diskCount} array={disk.colors} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial map={glowTex} size={0.18} vertexColors transparent opacity={0.95} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      </points>
+      {/* Stars spiralling in to be swallowed */}
+      <points ref={inflowRef} renderOrder={1}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={inflowCount} array={inflow.positions} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial map={glowTex} size={0.13} color="#cfe8ff" transparent opacity={0.9} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      </points>
+    </group>
+  );
+};
+
+/**
  * Moon - bright glowing moon
  */
 const Moon = () => {
@@ -560,7 +898,7 @@ const Clouds = () => {
             <mesh position={[0, 0, 0]}>
               <sphereGeometry args={[1, 16, 16]} />
               <meshStandardMaterial 
-                color="#C5E1FF" 
+                color="#EAF4FF" 
                 transparent 
                 opacity={0.95} 
                 roughness={1}
@@ -626,7 +964,7 @@ const Clouds = () => {
             <mesh position={[-0.2, 0.1, 0.5]}>
               <sphereGeometry args={[0.65, 16, 16]} />
               <meshStandardMaterial 
-                color="#BBE1FF" 
+                color="#DCEBFF" 
                 transparent 
                 opacity={0.8} 
                 roughness={1}
@@ -701,6 +1039,21 @@ const Birds = () => {
 };
 
 /**
+ * ParallaxRig - gently glides the camera toward the cursor so the whole cosmos
+ * (stars, supernovae, the black hole) shifts with depth as you move the mouse,
+ * making the scene feel alive and immersive. Pure camera motion — no layout.
+ */
+const ParallaxRig = () => {
+  useFrame((state) => {
+    const { pointer, camera } = state;
+    camera.position.x += (pointer.x * 1.3 - camera.position.x) * 0.045;
+    camera.position.y += (pointer.y * 0.9 - camera.position.y) * 0.045;
+    camera.lookAt(0, 0, 0);
+  });
+  return null;
+};
+
+/**
  * Hero Organism - Telling Medhat's Story
  * "A passionate software engineer who turned imagination into reality"
  */
@@ -735,15 +1088,17 @@ const HeroNew = () => {
     }`}>
       {/* 3D Background - Day or Night */}
       <div className="absolute inset-0 z-0">
-        <Canvas
+        <AdaptiveCanvas
           ref={canvasRef}
+          eager
           camera={{ position: [0, 0, 10], fov: 75 }}
           gl={{ alpha: true, antialias: true }}
           style={{ background: 'transparent' }}
         >
-          <ambientLight intensity={isDark ? 0.2 : 0.8} />
+          <ambientLight intensity={isDark ? 0.2 : 1.15} />
           <pointLight position={[10, 10, 10]} intensity={isDark ? 0.3 : 1} color="#ffffff" />
           <pointLight position={[-10, -10, -5]} intensity={isDark ? 0.2 : 0.5} color={isDark ? "#4FB3D4" : "#FDB813"} />
+          <ParallaxRig />
           
           {isDark ? (
             /* Night Sky Theme */
@@ -753,6 +1108,10 @@ const HeroNew = () => {
               <FloatingCode />
               <Constellations />
               <Moon />
+              <BlackHole />
+              <Supernova position={[12, 6, -17]} color="#67e8f9" emberColor="#fb923c" delay={2} period={19} />
+              <Supernova position={[-14, -4, -19]} color="#a78bfa" emberColor="#f472b6" delay={9} period={24} />
+              <Supernova position={[4, 10, -22]} color="#34d399" emberColor="#fbbf24" delay={17} period={29} />
               <ShootingStar delay={0} startPos={[12, 8, -8]} />
               <ShootingStar delay={2500} startPos={[-10, 6, -6]} />
               <ShootingStar delay={5000} startPos={[8, -5, -10]} />
@@ -761,12 +1120,13 @@ const HeroNew = () => {
           ) : (
             /* Day Sky Theme */
             <>
+              <hemisphereLight args={["#ffffff", "#bcd9ff", 1.4]} />
               <Sun />
               <Clouds />
               <Birds />
             </>
           )}
-        </Canvas>
+        </AdaptiveCanvas>
         
         {/* Gradient overlay for depth */}
         <div className={`absolute inset-0 pointer-events-none ${
@@ -963,6 +1323,7 @@ const HeroNew = () => {
             }}
             className="flex flex-wrap justify-center gap-4 pt-6"
           >
+            <Magnetic className="inline-flex">
             <motion.a
               href="https://github.com/medhatjachour"
               target="_blank"
@@ -992,7 +1353,9 @@ const HeroNew = () => {
               <FaGithub className="text-lg" />
               <span>GitHub</span>
             </motion.a>
+            </Magnetic>
 
+            <Magnetic className="inline-flex">
             <motion.a
               href="https://linkedin.com/in/medhatjachour"
               target="_blank"
@@ -1023,7 +1386,9 @@ const HeroNew = () => {
               <FaLinkedin className="text-lg" />
               <span>LinkedIn</span>
             </motion.a>
+            </Magnetic>
             
+            <Magnetic className="inline-flex">
             <motion.a
               href="/medhat frontend engineer.pdf"
               download
@@ -1053,6 +1418,7 @@ const HeroNew = () => {
               <FaDownload className="text-lg" />
               <span>Resume</span>
             </motion.a>
+            </Magnetic>
           </motion.div>
 
           {/* Scroll indicator */}

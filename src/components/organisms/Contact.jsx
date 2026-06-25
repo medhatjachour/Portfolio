@@ -1,6 +1,7 @@
 import React, { useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
 import { Float, MeshDistortMaterial } from '@react-three/drei';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -155,21 +156,46 @@ const Contact = ({
   
   const handleSubmit = async (values, { resetForm }) => {
     setSubmitting(true);
-    
+
     try {
-      // Simulate API call - Replace with actual API endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log('Form submitted:', values);
+      // Web3Forms: free, no backend. Get an access key at https://web3forms.com
+      // (created with your email) and put it in .env.local as VITE_WEB3FORMS_KEY.
+      const accessKey =
+        import.meta.env.VITE_WEB3FORMS_KEY || '2549a3f5-c206-413f-bbbd-868dc7f924ca';
+      if (!accessKey) {
+        throw new Error('Email service is not configured yet.');
+      }
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New portfolio message from ${values.name}`,
+          from_name: values.name,
+          name: values.name,
+          email: values.email,
+          message: values.message,
+        }),
+      });
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to send message.');
+      }
+
       setSuccess(true);
       resetForm();
-      
+
       // Reset success message after 5 seconds
       setTimeout(() => {
         reset();
       }, 5000);
     } catch (error) {
-      setError('Failed to send message. Please try again.');
+      setError(error.message || 'Failed to send message. Please try again.');
       setTimeout(() => {
         reset();
       }, 5000);
@@ -185,7 +211,7 @@ const Contact = ({
     >
       {/* 3D Background */}
       <div className="absolute inset-0 z-0" style={{ opacity: 0.4 }}>
-        <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
+        <AdaptiveCanvas camera={{ position: [0, 0, 8], fov: 75 }}>
           <ambientLight intensity={0.4} />
           <pointLight position={[10, 10, 10]} intensity={1} color="#6366F1" />
           <pointLight position={[-10, -10, -10]} intensity={0.8} color="#EC4899" />
@@ -193,7 +219,7 @@ const Contact = ({
           <MessageOrb position={[-4, 2, 0]} color="#6366F1" scale={0.8} />
           <MessageOrb position={[4, -2, 1]} color="#EC4899" scale={1} />
           <MessageOrb position={[0, 3, -2]} color="#8B5CF6" scale={0.6} />
-        </Canvas>
+        </AdaptiveCanvas>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-[#0f172a]/60 pointer-events-none" />
       </div>
       
@@ -244,9 +270,10 @@ const Contact = ({
             <Formik
               initialValues={{ name: '', email: '', message: '' }}
               validationSchema={contactSchema}
+              validateOnMount
               onSubmit={handleSubmit}
             >
-              {({ errors, touched, values, handleChange }) => (
+              {({ errors, touched, values, handleChange, isValid, dirty }) => (
                 <Form className="space-y-6">
                   <Input
                     type="text"
@@ -255,6 +282,7 @@ const Contact = ({
                     value={values.name}
                     onChange={handleChange}
                     error={touched.name && errors.name}
+                    valid={touched.name && !errors.name && Boolean(values.name)}
                     required
                   />
                   
@@ -265,6 +293,7 @@ const Contact = ({
                     value={values.email}
                     onChange={handleChange}
                     error={touched.email && errors.email}
+                    valid={touched.email && !errors.email && Boolean(values.email)}
                     required
                   />
                   
@@ -275,12 +304,13 @@ const Contact = ({
                     value={values.message}
                     onChange={handleChange}
                     error={touched.message && errors.message}
+                    valid={touched.message && !errors.message && Boolean(values.message)}
                     required
                   />
                   
                   <motion.button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isValid || !dirty}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"

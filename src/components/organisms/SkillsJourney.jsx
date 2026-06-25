@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
 import { Float, MeshDistortMaterial, Text3D, Center } from '@react-three/drei';
 // eslint-disable-next-line no-unused-vars
 import { motion, useInView } from 'framer-motion';
@@ -212,7 +213,7 @@ const SkillsJourney = () => {
     >
       {/* Flowing 3D background - no boxes, blends naturally */}
       <div className="absolute inset-0 w-full h-full opacity-40">
-        <Canvas
+        <AdaptiveCanvas
           camera={{ position: [0, 0, 8], fov: 60 }}
           style={{ background: 'transparent' }}
         >
@@ -228,7 +229,7 @@ const SkillsJourney = () => {
           <TechOrb position={[3, -1, -3]} color="#3178C6" scale={0.6} />
           <TechOrb position={[-2, -2, -1]} color="#47A248" scale={0.5} />
           <TechOrb position={[2, 1, -4]} color="#F7DF1E" scale={0.6} />
-        </Canvas>
+        </AdaptiveCanvas>
       </div>
 
       {/* Gradient overlays for seamless blending */}

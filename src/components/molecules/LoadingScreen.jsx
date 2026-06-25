@@ -25,7 +25,7 @@ const LoadingScreen = () => {
         clearInterval(typingInterval);
         setTypingComplete(true);
       }
-    }, 80); // Typing speed
+    }, 40); // Typing speed
 
     return () => clearInterval(typingInterval);
   }, []);
@@ -35,23 +35,22 @@ const LoadingScreen = () => {
     if (typingComplete) {
       setTimeout(() => {
         setShowShine(true);
-      }, 300);
+      }, 150);
     }
   }, [typingComplete]);
 
   useEffect(() => {
-    // Simulate loading progress - slower to match typing
+    // Fill quickly, but hold just under full until the tagline finishes typing
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100 && typingComplete && showShine) {
+        if (prev >= 100 && typingComplete) {
           clearInterval(interval);
-          setTimeout(() => setIsLoading(false), 800);
+          setTimeout(() => setIsLoading(false), 450);
           return 100;
         }
-        // Slower progress to wait for typing
-        return prev + Math.random() * 8;
+        return Math.min(prev + 6 + Math.random() * 14, typingComplete ? 100 : 92);
       });
-    }, 250);
+    }, 120);
 
     return () => clearInterval(interval);
   }, [typingComplete, showShine]);
@@ -105,7 +104,7 @@ const LoadingScreen = () => {
                 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent"
                 style={{ backgroundSize: '200% auto' }}
               >
-                MA
+                MgA
               </motion.h1>
               <p className="text-gray-400 text-xl mt-2">
                 Medhat Ashour

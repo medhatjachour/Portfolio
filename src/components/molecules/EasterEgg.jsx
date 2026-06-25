@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
 import { Float, MeshDistortMaterial } from '@react-three/drei';
 import { FaRocket, FaCode, FaHeart, FaMicrosoft } from 'react-icons/fa';
 import * as THREE from 'three';
@@ -120,9 +121,9 @@ const EasterEgg = () => {
         >
           {/* 3D Background */}
           <div className="absolute inset-0 bg-black">
-            <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
+            <AdaptiveCanvas eager keepOnMobile camera={{ position: [0, 0, 10], fov: 75 }}>
               <MegaScene />
-            </Canvas>
+            </AdaptiveCanvas>
           </div>
 
           {/* Content */}

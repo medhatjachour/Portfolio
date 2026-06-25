@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import AdaptiveCanvas from '../atoms/AdaptiveCanvas';
 import { MeshDistortMaterial, Float } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
@@ -284,13 +285,15 @@ const AIAgent = () => {
               />
 
               {/* 3D canvas */}
-              <Canvas
+              <AdaptiveCanvas
+                eager
+                keepOnMobile
                 camera={{ position: [0, 0, 3.5], fov: 52 }}
                 gl={{ antialias: true, alpha: true }}
                 style={{ position: 'absolute', inset: 0, background: 'transparent' }}
               >
                 <Avatar3D isThinking={isThinking} isTalking={isTalking} />
-              </Canvas>
+              </AdaptiveCanvas>
 
               {/* Bottom identity strip */}
               <div
