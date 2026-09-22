@@ -7,11 +7,12 @@ import { motion, useInView } from 'framer-motion';
 import * as THREE from 'three';
 import {
   FaReact, FaNodeJs, FaPython, FaGitAlt, FaDocker,
-  FaAws, FaDatabase, FaCode, FaRocket, FaBolt, FaMicrosoft
+  FaDatabase, FaCode, FaRocket, FaBolt, FaMicrosoft, FaServer
 } from 'react-icons/fa';
 import {
-  SiTypescript, SiJavascript, SiMongodb, SiPostgresql,
-  SiRedux, SiTailwindcss, SiNextdotjs, SiFastapi, SiReact
+  SiTypescript, SiJavascript, SiPostgresql, SiPrisma, SiSqlite,
+  SiRedux, SiTailwindcss, SiNextdotjs, SiFastapi, SiExpress,
+  SiGithubactions, SiTestinglibrary
 } from 'react-icons/si';
 
 /**
@@ -157,47 +158,52 @@ const SkillsJourney = () => {
   const journey = [
     {
       phase: "The Foundation",
-      period: "2017-2022 | University Days",
-      story: "Started with Arduino & Raspberry Pi, fell in love with code",
+      period: "2017 – 2022 | Computer Engineering",
+      story: "B.Sc. in Computer Engineering & Control Systems — where signals, systems and software first clicked. The fundamentals I still lean on daily: data structures, SQL and Python.",
       skills: [
-        { name: 'Python', icon: <FaPython />, level: 95, color: '#3776AB' },
-        { name: 'PyQt/PySide', icon: <FaCode />, level: 90, color: '#41CD52' },
-        { name: 'SQL', icon: <FaDatabase />, level: 85, color: '#336791' }
+        { name: 'Python', icon: <FaPython />, level: 92, color: '#3776AB' },
+        { name: 'SQL', icon: <FaDatabase />, level: 88, color: '#336791' },
+        { name: 'Git/GitHub', icon: <FaGitAlt />, level: 90, color: '#F05032' }
       ]
     },
     {
-      phase: "The Breakthrough",
-      period: "2022-2024 | Ronan Medical & Growth",
-      story: "Built real-time brain activity software, discovered frontend magic",
+      phase: "Real-Time Systems",
+      period: "2022 – 2024 | Ronan Medical",
+      story: "Built a Python desktop application for live brain-activity monitoring. Re-engineered the plotting pipeline with PyQtGraph to cut chart update cost by ~15% and restructured the codebase around OOP for maintainability.",
       skills: [
-        { name: 'JavaScript', icon: <SiJavascript />, level: 95, color: '#F7DF1E' },
-        { name: 'React', icon: <FaReact />, level: 95, color: '#61DAFB' },
-        { name: 'TypeScript', icon: <SiTypescript />, level: 90, color: '#3178C6' },
-        { name: 'Redux', icon: <SiRedux />, level: 88, color: '#764ABC' }
+        { name: 'JavaScript', icon: <SiJavascript />, level: 94, color: '#F7DF1E' },
+        { name: 'React', icon: <FaReact />, level: 94, color: '#61DAFB' },
+        { name: 'TypeScript', icon: <SiTypescript />, level: 92, color: '#3178C6' },
+        { name: 'Python', icon: <FaPython />, level: 90, color: '#3776AB' },
+        { name: 'SQLite', icon: <SiSqlite />, level: 88, color: '#0F80CC' }
       ]
     },
     {
-      phase: "The Acceleration",
-      period: "2024-2025 | Full Stack Mastery",
-      story: "From frontend specialist to full-stack engineer at LeadBull",
+      phase: "Product Engineering",
+      period: "2024 – 2025 | LeadBull & Eng Techno",
+      story: "Owned analytics dashboards and cross-platform features end to end: typed API layers, RBAC-aware routing, secure session handling and state architectures that stayed predictable as the products grew.",
       skills: [
-        { name: 'Node.js', icon: <FaNodeJs />, level: 88, color: '#339933' },
-        { name: 'Next.js', icon: <SiNextdotjs />, level: 90, color: '#000000' },
-        { name: 'MongoDB', icon: <SiMongodb />, level: 85, color: '#47A248' },
-        { name: 'PostgreSQL', icon: <SiPostgresql />, level: 82, color: '#4169E1' },
-        { name: 'Tailwind', icon: <SiTailwindcss />, level: 92, color: '#06B6D4' },
-        { name: 'FastAPI', icon: <SiFastapi />, level: 85, color: '#009688' }
+        { name: 'Next.js', icon: <SiNextdotjs />, level: 91, color: '#E2E8F0' },
+        { name: 'Node.js', icon: <FaNodeJs />, level: 89, color: '#339933' },
+        { name: 'Express', icon: <SiExpress />, level: 87, color: '#94A3B8' },
+        { name: 'PostgreSQL', icon: <SiPostgresql />, level: 86, color: '#4169E1' },
+        { name: 'Prisma', icon: <SiPrisma />, level: 86, color: '#5A67D8' },
+        { name: 'Redux / Zustand', icon: <SiRedux />, level: 90, color: '#764ABC' },
+        { name: 'Tailwind CSS', icon: <SiTailwindcss />, level: 93, color: '#06B6D4' },
+        { name: 'FastAPI', icon: <SiFastapi />, level: 84, color: '#009688' }
       ]
     },
     {
-      phase: "The Achievement",
-      period: "2025-Present | Microsoft SRE",
-      story: "CI/CD pipelines for Copilot Chat, scaling at Microsoft",
+      phase: "Release Engineering",
+      period: "2025 – 2026 | Microsoft",
+      story: "Owned CI/CD for Copilot Chat: TypeScript and PowerShell automation for staged rollout and rollback, benchmark gates that surfaced regressions before they shipped, and pipelines teams could rely on.",
       skills: [
-        { name: 'Git/GitHub', icon: <FaGitAlt />, level: 90, color: '#F05032' },
-        { name: 'Docker', icon: <FaDocker />, level: 80, color: '#2496ED' },
-        { name: 'AWS', icon: <FaAws />, level: 78, color: '#FF9900' },
-        { name: 'CI/CD', icon: <FaRocket />, level: 85, color: '#10B981' }
+        { name: 'CI/CD', icon: <FaRocket />, level: 92, color: '#10B981' },
+        { name: 'GitHub Actions', icon: <SiGithubactions />, level: 91, color: '#2088FF' },
+        { name: 'PowerShell', icon: <FaServer />, level: 88, color: '#5391FE' },
+        { name: 'Azure', icon: <FaMicrosoft />, level: 85, color: '#0078D4' },
+        { name: 'Docker', icon: <FaDocker />, level: 86, color: '#2496ED' },
+        { name: 'Testing', icon: <SiTestinglibrary />, level: 88, color: '#E33332' }
       ]
     }
   ];
@@ -254,11 +260,11 @@ const SkillsJourney = () => {
           </motion.span>
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-600">
-              From Student to SRE
+              From Circuits to the Cloud
             </span>
           </h2>
           <p className="text-xl sm:text-2xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
-            Every skill tells a story. Here's mine.
+            Six years of turning hard problems into shipped products.
           </p>
         </motion.div>
 
@@ -365,10 +371,10 @@ const SkillsJourney = () => {
         >
           <div className="backdrop-blur-md bg-gradient-to-br from-emerald-500/10 to-purple-500/10 rounded-3xl p-8 border border-emerald-400/30 max-w-3xl mx-auto">
             <h3 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-purple-500">
-              🚀 Currently Exploring
+              � Current Focus
             </h3>
             <p className="text-lg text-[var(--color-text-muted)]">
-              Web3, AI Integration, Advanced 3D Experiences & Scalable Cloud Architecture
+              Release reliability at scale, AI-assisted developer tooling, real-time 3D on the web, and cloud-native architecture.
             </p>
           </div>
         </motion.div>

@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 *.env
-*.env.example
+# `.env.example` is a template holding placeholder values, and IS meant to be committed.
+# Only real `.env` files are secret.
+portfolio-dist.tar.gz

@@ -1,0 +1,23 @@
+# Standalone / self-hosting option ONLY.
+#
+# This is NOT how the live site is deployed. In production the portfolio is served as
+# static files by the shared reverse proxy that fronts every site on the VPS — see the
+# "Deployment" section of README.md and BizFlow/docs/PRODUCTION_SERVER_RUNBOOK.md §15.
+# Use this file when hosting the portfolio on a machine of its own.
+services:
+  portfolio:
+    build: .
+    container_name: medhat-portfolio
+    # Bind to loopback ONLY. Publishing on 0.0.0.0 would hand the site out over plain
+    # HTTP on a second port, bypassing the TLS terminator and its security headers, and
+    # it would collide with whatever else already owns that port on a shared host.
+    # Put a proxy in front and point it at http://127.0.0.1:8080.
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+    # Cap the log file so a long-lived container cannot slowly fill the disk.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

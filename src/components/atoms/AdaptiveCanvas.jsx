@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { MOBILE_QUERY } from '../../utils/viewport';
 
 /**
  * AdaptiveCanvas
@@ -22,8 +23,10 @@ import { Canvas } from '@react-three/fiber';
  *
  * All canvases here live inside `position: absolute` containers, so the
  * placeholder sentinel below has zero layout impact.
+ *
+ * The mobile breakpoint itself lives in `utils/viewport.js`, because the hero's
+ * gravity simulation has to use the exact same one.
  */
-const MOBILE_QUERY = '(max-width: 767px)';
 
 const AdaptiveCanvas = forwardRef(function AdaptiveCanvas(
   {

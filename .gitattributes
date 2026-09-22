@@ -1,0 +1,19 @@
+# Normalise line endings in the repository. Windows checkouts still get CRLF for
+# files where it does not matter.
+* text=auto
+
+# Shell scripts must stay LF even on a Windows checkout. A CRLF shebang fails on
+# Linux with "bad interpreter: /bin/bash^M", and deploy-vps.sh is meant to run on
+# the VPS. Without this, core.autocrlf=true silently rewrites it.
+*.sh text eol=lf
+Dockerfile text eol=lf
+
+# Never let Git try to normalise binary payloads.
+*.mp3 binary
+*.png binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.woff binary
+*.woff2 binary

@@ -5,10 +5,11 @@ import { Float, MeshDistortMaterial } from '@react-three/drei';
 // eslint-disable-next-line no-unused-vars
 import { motion, useInView } from 'framer-motion';
 import * as THREE from 'three';
-import { FaGithub, FaExternalLinkAlt, FaCode, FaRocket } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaCode, FaRocket, FaCheckCircle } from 'react-icons/fa';
 import {
   SiReact, SiTypescript, SiNextdotjs, SiMongodb, SiTailwindcss,
-  SiNodedotjs, SiPython, SiPostgresql, SiJavascript, SiFastapi
+  SiNodedotjs, SiPython, SiPostgresql, SiJavascript,
+  SiElectron, SiPrisma, SiSqlite, SiThreedotjs
 } from 'react-icons/si';
 import ProjectFilter from '../molecules/ProjectFilter';
 import GitHubStats from '../molecules/GitHubStats';
@@ -166,24 +167,56 @@ const ProjectsShowcase = () => {
     { name: 'React', icon: SiReact },
     { name: 'Next.js', icon: SiNextdotjs },
     { name: 'TypeScript', icon: SiTypescript },
-    { name: 'Python', icon: SiPython },
-    { name: 'Node.js', icon: SiNodedotjs }
+    { name: 'Node.js', icon: SiNodedotjs },
+    { name: 'Electron', icon: SiElectron },
+    { name: 'Python', icon: SiPython }
   ];
 
-  // Real projects from Medhat's work
+  // Selected work — scope, architecture decisions and measurable outcomes.
   const allProjects = [
     {
       title: 'BizFlow',
-      description: 'Comprehensive business management platform for streamlining operations, workflow automation, and team collaboration. Built with modern technologies for scalability and real-time updates.',
-      techStack: ['React', 'TypeScript', 'Node.js', 'MongoDB'],
-      icons: [<SiReact />, <SiTypescript />, <SiNodedotjs />, <SiMongodb />],
+      description: 'Plugin-based business platform spanning point of sale, inventory, finance and operations. Architected the module system, RBAC permission model and reporting layer across desktop and web builds, modelling real workflows from nine different business domains.',
+      highlights: ['9 business domains modelled', 'Plugin module architecture', 'Device-bound desktop licensing'],
+      techStack: ['Electron', 'React 18', 'TypeScript', 'Prisma', 'SQLite', 'Tailwind CSS'],
+      icons: [<SiElectron />, <SiReact />, <SiTypescript />, <SiPrisma />, <SiSqlite />],
       githubUrl: 'https://github.com/medhatjachour/BizFlow',
-      category: 'Full Stack',
+      liveUrl: 'https://www.bizflow.medhatjachour.tech/',
+      category: 'Platform',
       gradient: 'from-blue-500 to-purple-600'
     },
     {
+      title: 'TransHub',
+      description: 'Logistics workspace for tracking shipments and coordinating dispatch. Role-aware React and TypeScript client over a Node/PostgreSQL API, with live status updates and audit-friendly record history.',
+      highlights: ['Role-aware operational views', 'Live shipment status', 'Node + PostgreSQL API'],
+      techStack: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+      icons: [<SiReact />, <SiTypescript />, <SiNodedotjs />, <SiPostgresql />],
+      liveUrl: 'https://www.transhub.medhatjachour.tech/',
+      category: 'Full Stack',
+      gradient: 'from-cyan-500 to-blue-600'
+    },
+    {
+      title: '1stIQARI',
+      description: 'Multilingual real-estate platform and executive dashboard. Built map-driven search and analytics views, then cut time-to-interactive with route-level code-splitting, caching and a tightened image strategy.',
+      highlights: ['Map-driven search + analytics', 'Multilingual (i18n)', 'Code-split, cached routes'],
+      techStack: ['Next.js', 'TypeScript', 'Tailwind CSS'],
+      icons: [<SiNextdotjs />, <SiTypescript />, <SiTailwindcss />],
+      category: 'Web Platform',
+      gradient: 'from-emerald-500 to-cyan-600'
+    },
+    {
+      title: 'Digital IA',
+      description: 'Cross-platform React Native app paired with a Next.js operations dashboard. Owned the shared domain types, Zustand state and resilient data flow so mobile and web never drifted apart.',
+      highlights: ['One domain model, two clients', 'Offline-tolerant data flow', 'Secure auth + refresh'],
+      techStack: ['React Native', 'Next.js', 'TypeScript', 'Zustand'],
+      icons: [<SiReact />, <SiNextdotjs />, <SiTypescript />],
+      category: 'Mobile + Web',
+      gradient: 'from-violet-500 to-indigo-600'
+    },
+    {
       title: 'Mega Courses',
-      description: 'A comprehensive Learning Management System where teachers can upload courses and students can enroll. Built with Next.js and AWS services for scalability and performance. Features include course management, student enrollment, and progress tracking.',
+      description: 'Learning platform where instructors publish courses and students enrol and track progress. Built the course and enrolment domains plus an AWS-backed media pipeline designed for horizontal scale.',
+      highlights: ['Course + enrolment domains', 'AWS media pipeline', 'Progress + completion tracking'],
       techStack: ['Next.js', 'React', 'TypeScript', 'AWS', 'MongoDB'],
       icons: [<SiNextdotjs />, <SiReact />, <SiTypescript />, <SiMongodb />],
       githubUrl: 'https://github.com/medhatjachour/Mega-courses',
@@ -192,15 +225,26 @@ const ProjectsShowcase = () => {
     },
     {
       title: 'LeadBull Platform',
-      description: 'Developed comprehensive user and admin dashboards with real-time data visualization, secure authentication, and advanced analytics tools. Improved platform efficiency significantly with React, Redux, and Tailwind CSS.',
-      techStack: ['React', 'Redux', 'Tailwind CSS', 'TypeScript'],
+      description: 'Analytics-heavy user and admin dashboards for a lead-generation product. Built reusable chart and table primitives, token-refresh session handling and RBAC-aware navigation, and reviewed the team’s frontend work.',
+      highlights: ['Reusable dashboard primitives', 'Token refresh + secure sessions', 'RBAC route guards'],
+      techStack: ['React', 'Redux', 'TypeScript', 'Tailwind CSS'],
       icons: [<SiReact />, <SiTailwindcss />, <SiTypescript />],
       category: 'Frontend',
       gradient: 'from-blue-500 to-purple-600'
     },
     {
+      title: 'Mazboot 3D E-commerce',
+      description: 'Graduation project: a 3D storefront that renders parametric body and product models so shoppers can visualise fit. Rebuilt the render loop with instancing and geometry reuse to hold a steady 60fps on mid-range hardware.',
+      highlights: ['Three.js + WebGL rendering', '60fps on mid-range devices', 'Parametric body models'],
+      techStack: ['Three.js', 'React', 'WebGL'],
+      icons: [<SiThreedotjs />, <SiReact />, <SiJavascript />],
+      category: '3D / Creative',
+      gradient: 'from-pink-500 to-purple-600'
+    },
+    {
       title: 'DoctorApp',
-      description: 'Full-stack web application for appointment booking and management. Features user authentication, admin dashboard, doctor availability management, and integrated Cloudinary for image storage.',
+      description: 'Appointment booking platform with doctor availability, an admin dashboard and Cloudinary-backed media. Designed the availability model so concurrent bookings cannot double-book a slot.',
+      highlights: ['Conflict-safe availability model', 'Patient + admin portals', 'Cloud media storage'],
       techStack: ['React', 'Node.js', 'MongoDB', 'TypeScript'],
       icons: [<SiReact />, <SiNodedotjs />, <SiMongodb />, <SiTypescript />],
       githubUrl: 'https://github.com/medhatjachour/doctorApp',
@@ -208,48 +252,13 @@ const ProjectsShowcase = () => {
       gradient: 'from-purple-500 to-pink-600'
     },
     {
-      title: 'Velox Platform',
-      description: 'High-performance web platform built for speed and efficiency. Features modern architecture, optimized workflows, and seamless user experience with cutting-edge technologies.',
-      techStack: ['React', 'TypeScript', 'Node.js', 'MongoDB'],
-      icons: [<SiReact />, <SiTypescript />, <SiNodedotjs />, <SiMongodb />],
-      githubUrl: 'https://github.com/medhatjachour/velox-platform',
-      category: 'Full Stack',
-      gradient: 'from-cyan-500 to-blue-600'
-    },
-    {
-      title: 'Car E-commerce',
-      description: 'Full-stack car e-commerce platform with comprehensive features for browsing, searching, and purchasing vehicles. Includes admin panel for inventory management.',
-      techStack: ['JavaScript', 'React', 'Node.js', 'MongoDB'],
-      icons: [<SiJavascript />, <SiReact />, <SiNodedotjs />, <SiMongodb />],
-      githubUrl: 'https://github.com/medhatjachour/car-eco',
-      category: 'E-commerce',
-      gradient: 'from-orange-500 to-red-600'
-    },
-    {
-      title: 'Blackhorse System',
-      description: 'Comprehensive software solution for small businesses focusing on sales management and inventory tracking. Improved efficiency by 30% and reduced manual errors by 25%. Built with Python and modern desktop technologies.',
+      title: 'Blackhorse Suite',
+      description: 'Desktop sales and inventory suite for small businesses. Shipped reporting, stock tracking and shift close-out flows that cut manual entry errors by roughly 25% and shortened end-of-day reconciliation.',
+      highlights: ['~25% fewer manual entry errors', 'Faster end-of-day close-out', 'Offline-first desktop app'],
       techStack: ['Python', 'PyQt', 'SQLite'],
-      icons: [<SiPython />],
+      icons: [<SiPython />, <SiSqlite />],
       category: 'Desktop',
       gradient: 'from-yellow-500 to-orange-600'
-    },
-
-    {
-      title: 'Mazboot 3D E-commerce',
-      description: 'Innovative graduation project: 3D e-commerce platform combining human body models and product models for immersive shopping. Increased user engagement by 40% with an innovative 3D interface.',
-      techStack: ['Three.js', 'React', 'WebGL'],
-      icons: [<SiReact />, <SiJavascript />],
-      category: 'Graduation Project',
-      gradient: 'from-pink-500 to-purple-600'
-    },
-    {
-      title: 'Employee Management',
-      description: 'Comprehensive employee management system for HR operations. Features employee records, attendance tracking, performance management, and reporting dashboard.',
-      techStack: ['React', 'Node.js', 'MongoDB', 'Express'],
-      icons: [<SiReact />, <SiNodedotjs />, <SiMongodb />],
-      githubUrl: 'https://github.com/medhatjachour/employee-management',
-      category: 'Full Stack',
-      gradient: 'from-indigo-500 to-blue-600'
     }
   ];
 
@@ -298,7 +307,7 @@ const ProjectsShowcase = () => {
             whileHover={{ scale: 1.05 }}
           >
             <FaRocket className="animate-bounce" />
-            Building Dreams Into Reality
+            Selected Work
           </motion.span>
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
@@ -306,7 +315,7 @@ const ProjectsShowcase = () => {
             </span>
           </h2>
           <p className="text-xl sm:text-2xl text-[var(--color-text-muted)] max-w-3xl mx-auto mb-12">
-            From learning platforms to healthcare systems, each project tells a story of problem-solving and innovation
+            Platform architecture, product surfaces and performance work — with the decisions and outcomes behind each build
           </p>
           
           {/* GitHub Stats */}
@@ -347,9 +356,22 @@ const ProjectsShowcase = () => {
                 </h3>
 
                 {/* Description */}
-                <p className="text-[var(--color-text-muted)] mb-4 leading-relaxed flex-grow">
+                <p className="text-[var(--color-text-muted)] mb-4 leading-relaxed">
                   {project.description}
                 </p>
+
+                {/* Impact highlights */}
+                <ul className="space-y-2 mb-5 flex-grow">
+                  {project.highlights.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-2 text-sm text-[var(--color-text-muted)]"
+                    >
+                      <FaCheckCircle className="mt-0.5 shrink-0 text-emerald-400" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Tech icons */}
                 <div className="flex items-center gap-3 mb-4">
@@ -376,20 +398,36 @@ const ProjectsShowcase = () => {
                 </div>
 
                 {/* Links */}
-                {project.githubUrl && (
-                  <motion.a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${project.gradient} text-white font-semibold hover:shadow-lg transition-all`}
-                  >
-                    <FaGithub />
-                    View Code
-                    <FaExternalLinkAlt className="text-sm" />
-                  </motion.a>
-                )}
+                <div className="flex flex-wrap gap-3">
+                  {project.githubUrl && (
+                    <motion.a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${project.gradient} text-white font-semibold hover:shadow-lg transition-all`}
+                    >
+                      <FaGithub />
+                      View Code
+                      <FaExternalLinkAlt className="text-sm" />
+                    </motion.a>
+                  )}
+
+                  {project.liveUrl && (
+                    <motion.a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-white/15 bg-white/5 text-white font-semibold hover:border-cyan-400/50 hover:bg-cyan-400/10 transition-all"
+                    >
+                      Open Live
+                      <FaExternalLinkAlt className="text-sm" />
+                    </motion.a>
+                  )}
+                </div>
               </div>
               </TiltCard>
             </motion.div>
