@@ -26,3 +26,29 @@ dist-ssr
 # `.env.example` is a template holding placeholder values, and IS meant to be committed.
 # Only real `.env` files are secret.
 portfolio-dist.tar.gz
+# --- Personal job-search material (added 2026-10-02) ---
+# Interview prep, application lists and scrapers. Must never be published:
+# a public portfolio repo is the first place a hiring manager looks.
+CANONICAL_*.md
+DEVSKILLER_*.md
+JOB_SEARCH_KIT.md
+INTERVIEW_PREP.md
+SALARY_AND_SCREENING.md
+ATS_ANSWERS.md
+SEND_THESE.md
+LIVE_LEADS.md
+GITHUB_PROFILE_FIX.md
+APPLY_LIST.md
+application-tracker.csv
+all-jobs.csv
+jobs.csv
+job-leads.csv
+people.csv
+direct-links.csv
+egypt-jobs.csv
+egypt-tech-jobs.csv
+outreach-list.csv
+outreach.html
+apply-fast.html
+tools/
+study/

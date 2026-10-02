@@ -974,7 +974,7 @@ const HeroNew = () => {
                   : 'text-blue-600 drop-shadow-[0_2px_8px_rgba(33,150,243,0.3)]'
               }`}
             >
-              Software Engineer @ Microsoft
+              Software Engineer — React, TypeScript &amp; Node.js
             </motion.p>
             
             <motion.p
@@ -996,6 +996,24 @@ const HeroNew = () => {
             >
               💭 everything in my imagination is possible
             </motion.p>
+
+            {/* Availability — the first thing a hiring manager should see. */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.1 }}
+              className={`mt-6 inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-xs md:text-sm font-medium backdrop-blur-md border ${
+                isDark
+                  ? 'bg-emerald-400/10 border-emerald-400/30 text-emerald-300'
+                  : 'bg-emerald-500/10 border-emerald-500/40 text-emerald-700'
+              }`}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              Open to new roles — remote, or relocation to UAE / KSA
+            </motion.div>
           </motion.div>
           </GravityTarget>
 
@@ -1089,7 +1107,7 @@ const HeroNew = () => {
             <GravityTarget className="inline-flex">
             <Magnetic className="inline-flex">
             <motion.a
-              href="/medhat frontend engineer.pdf"
+              href="/Medhat_Ashour_Software_Engineer.pdf"
               download
               whileHover={{ 
                 scale: 1.05,

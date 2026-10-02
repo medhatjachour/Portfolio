@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaStar, FaCodeBranch, FaBook } from 'react-icons/fa';
+import { FaGithub, FaCodeBranch, FaBook } from 'react-icons/fa';
 
 /**
  * GitHub Stats Component
@@ -46,17 +46,19 @@ const GitHubStats = ({ username = 'medhatjachour' }) => {
     fetchGitHubStats();
   }, [username]);
 
+  // Deliberately NOT showing stars, forks or followers. Those numbers are near
+  // zero here, and rendering them next to the project grid actively undersells
+  // the work. Only honest, self-evident signals belong in this block.
   const statItems = [
-    { icon: FaBook, label: 'Repositories', value: stats.totalRepos, color: 'from-blue-500 to-cyan-400' },
-    { icon: FaStar, label: 'Stars', value: stats.totalStars, color: 'from-yellow-500 to-orange-400' },
-    { icon: FaCodeBranch, label: 'Forks', value: stats.totalForks, color: 'from-emerald-500 to-teal-400' },
-    { icon: FaGithub, label: 'Followers', value: stats.followers, color: 'from-purple-500 to-pink-400' }
+    { icon: FaBook, label: 'Public repositories', value: stats.totalRepos, color: 'from-blue-500 to-cyan-400' },
+    { icon: FaCodeBranch, label: 'Business domains modelled', value: 9, color: 'from-emerald-500 to-teal-400' },
+    { icon: FaGithub, label: 'Years shipping software', value: 4, color: 'from-purple-500 to-pink-400' }
   ];
 
   if (stats.loading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map((i) => (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {[1, 2, 3].map((i) => (
           <div key={i} className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-6 animate-pulse">
             <div className="h-12 w-12 bg-white/10 rounded-xl mb-4" />
             <div className="h-4 bg-white/10 rounded mb-2" />
@@ -68,7 +70,7 @@ const GitHubStats = ({ username = 'medhatjachour' }) => {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {statItems.map((item, index) => (
         <motion.div
           key={item.label}

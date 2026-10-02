@@ -86,59 +86,74 @@ const ExperienceOrb = ({ position, color }) => {
 const Experience = ({ 
   experiences = [
     {
-      date: 'May 2025 - Present',
-      title: 'Outsource Software Engineer (SRE)',
+      date: 'May 2025 - Jun 2026',
+      title: 'Software Engineer, Copilot Chat (SRE, Contract)',
       company: 'Microsoft',
-      location: 'Remote',
+      location: 'Remote (US-based team)',
       icon: FaMicrosoft,
       color: 'from-blue-500 to-cyan-400',
       achievements: [
-        'Overhauled and maintained the CI/CD pipeline for Copilot Chat, supporting structured patch deployment, automated rollout strategies, and safe rollback mechanisms',
-        'Built scalable YAML workflows and automated tasks with PowerShell and TypeScript to streamline deployments and boost team efficiency',
-        'Designed and executed unit tests to benchmark system performance, helping identify bottlenecks and optimize release quality',
-        'Specialized in Continuous Integration and Continuous Delivery (CI/CD) methodologies, contributing to high reliability across environments'
+        'Owned the CI/CD pipeline for Copilot Chat — structured patch deployment, automated rollout strategies and safe rollback mechanisms across multiple environments',
+        'Built scalable YAML workflows and automation in PowerShell and TypeScript, replacing manual release steps and cutting deployment effort for the engineering team',
+        'Applied system design to release automation: idempotent, failure-tolerant pipelines with explicit rollback boundaries and clear ownership between services',
+        'Designed and executed unit tests to benchmark system performance, surfacing bottlenecks and improving release quality',
+        'Contributed to architecture and release-readiness reviews across service boundaries for a high-traffic AI product'
       ]
     },
     {
-      date: 'April 2025 - July 2025',
+      date: 'Apr 2025 - Jul 2025',
       title: 'Full Stack Engineer',
       company: 'Eng Techno',
       location: 'Kafr El-Shaikh, Egypt',
       icon: FaLaptopCode,
       color: 'from-purple-500 to-pink-400',
       achievements: [
-        'Developed and maintained mobile applications using React Native and React Hook Form',
-        'Built responsive web applications using React, Redux, and Tailwind CSS',
-        'Integrated APIs with Axios for efficient data fetching, improving data retrieval speed by 40%'
+        'Developed and maintained cross-platform mobile applications using React Native and React Hook Form',
+        'Built responsive web applications with React, Redux and Tailwind CSS, from component design through to release',
+        'Designed a reusable component and API-access architecture that separated domain logic from presentation, so new features could be added without cross-cutting changes',
+        'Integrated REST APIs with Axios, defining predictable loading, error and retry behaviour for real-time data flows'
       ]
     },
     {
-      date: 'August 2024 - December 2024',
+      date: 'Aug 2024 - Dec 2024',
       title: 'Frontend Developer',
       company: 'LeadBull',
       location: 'Cairo, Egypt',
       icon: FaBriefcase,
       color: 'from-emerald-500 to-teal-400',
       achievements: [
-        'Developed and maintained web applications using React, Redux, and Tailwind CSS',
+        'Developed and maintained web applications using React, Redux and Tailwind CSS',
         'Integrated APIs with Axios for efficient data fetching, improving data retrieval speed by 40%',
-        'Collaborated with UX/UI designers to bring designs to life, enhancing user satisfaction scores by 25%',
-        'Implemented secure authentication and token refresh mechanisms to enhance protection, achieving 100% compliance with security standards',
-        'Conducted code reviews and provided mentorship to junior developers'
+        'Implemented secure authentication and token-refresh flows, including session expiry and protected-route handling',
+        'Modelled data and state for analytics-heavy screens, choosing normalised store shapes so dashboards stayed fast as record counts grew',
+        'Collaborated with UX/UI designers to translate designs into accessible, responsive interfaces',
+        'Conducted code reviews and mentored junior developers on component design and state-management patterns'
       ]
     },
     {
-      date: 'May 2022 - January 2024',
+      date: 'May 2022 - Jan 2024',
       title: 'Software Engineer',
       company: 'Ronan Medical',
-      location: 'Remote',
+      location: 'Remote (US-based team)',
       icon: FaMedkit,
       color: 'from-indigo-500 to-blue-400',
       achievements: [
-        'Created an intuitive and modern GUI for brain activity measurement software, enhancing the user experience',
-        'Designed and implemented a local database to store critical data efficiently',
-        'Designed and managed data flow using OOP principles, improving system reliability by 30%',
-        'Enhanced performance of data plotting using PyQtGraph, optimizing real-time visualization and reducing processing time by 15%'
+        'Built the desktop application GUI in PyQt and PySide, using Qt signals/slots, custom QWidget components and Qt Designer layouts for a data-intensive clinical workflow',
+        'Designed the local database schema for critical measurement data, covering data modelling, migrations and query optimisation',
+        'Applied OOP and design patterns — separation of concerns, single-responsibility modules, dependency injection — across the data-flow layer, improving system reliability by 30%',
+        'Optimised real-time plotting with PyQtGraph, reducing visualization processing time by 15% through algorithmic and rendering improvements',
+        'Owned features end-to-end: requirements gathering with clinicians, architecture, implementation and release'
+      ]
+    },
+    {
+      date: 'Jan 2024 - Aug 2024',
+      title: 'Military Service',
+      company: 'Egyptian Armed Forces',
+      location: 'Egypt',
+      icon: FaBriefcase,
+      color: 'from-slate-500 to-slate-400',
+      achievements: [
+        'Completed compulsory national service'
       ]
     }
   ]

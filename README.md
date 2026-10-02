@@ -198,6 +198,15 @@ src/
 - Success: #28A745 (Green)
 - Warning: #FFC107 (Yellow)
 
+## 📚 Documentation
+
+- **[TECHNICAL_ARCHITECTURE.md](./TECHNICAL_ARCHITECTURE.md)** — how the site is built: the
+  ray-traced black hole shader, the roaming/gravity/tidal physics, the instanced starfield, the
+  adaptive canvas strategy, the AI agent's offline fallback, the deployment topology, and the
+  debugging field notes.
+- **[CUSTOMIZATION_GUIDE_V2.md](./CUSTOMIZATION_GUIDE_V2.md)** — how to change the content, theme
+  and animations.
+
 ## 🌙 Sky Branch Features
 
 The current `sky` branch includes:
